@@ -1,0 +1,4 @@
+#%PAM-1.0
+auth    required    pam_userdb.so   db=/etc/rundeck_passwd crypt=crypt
+account required    pam_permit.so
+session required    pam_loginuid.so

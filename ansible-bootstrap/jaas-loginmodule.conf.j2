@@ -1,0 +1,12 @@
+RDpropertyfilelogin {
+  org.rundeck.jaas.jetty.JettyPamLoginModule requisite
+    debug="true"
+    service="rundeck"
+    storePass="true";
+
+  org.rundeck.jaas.jetty.JettyRolePropertyFileLoginModule required
+    debug="true"
+    useFirstPass="true"
+    file="/etc/rundeck/realm.properties";
+
+};
