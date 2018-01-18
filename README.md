@@ -38,7 +38,12 @@ Following volumes should be mounted externally to persist data and config betwee
 ## Usage
 
 ```
-docker run --rm -it --name rundeck -p 4440:4440 -v $(pwd)/config.yaml:/config/config.yaml docker.io/panubo/rundeck:latest
+docker run --rm -it --name rundeck -p 4440:4440 \
+  -v $(pwd)/config.yaml:/config/config.yaml \
+  -v $(pwd)/test/lib:/var/lib/rundeck \
+  -v $(pwd)/test/var:/var/rundeck \
+  -v $(pwd)/test/log:/var/log/rundeck \
+  docker.io/panubo/rundeck:latest
 ```
 
 The container bootstrap does not support SSL, it is intended that Rundeck is run behind an SSL terminating proxy such as Nginx, Haproxy or a cloud load balancer service.
