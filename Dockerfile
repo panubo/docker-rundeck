@@ -7,7 +7,7 @@ ENV LC_ALL C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl openjdk-8-jre-headless openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl openjdk-8-jre-headless openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
