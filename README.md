@@ -13,6 +13,8 @@ rundeck_uuid: "{{ inventory_hostname | to_uuid }}"
 
 rundeck_server_url: http://localhost:4440
 
+rundeck_api_auth_max_duration: "30d"
+
 rundeck_users:
   - user: user1
     password: $6$Q8...$...
