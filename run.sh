@@ -10,5 +10,4 @@ prog="rundeckd"
 
 . /etc/rundeck/profile
 
-
-su -s /bin/bash rundeck -c "$rundeckd"
+exec su -s /bin/bash rundeck -c "$rundeckd"

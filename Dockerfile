@@ -24,14 +24,13 @@ RUN set -x \
   ;
 
 # Install rundeck
-ENV RUNDECK_VERSION 2.10.3-1-GA_all
-ENV RUNDECK_CHECKSUM 91ea1194376a1ecafba49e60f5265ea38ab2c4db
+ENV RUNDECK_VERSION 2.11.0-1-GA_all
+ENV RUNDECK_CHECKSUM 4354401b42bb140687816adc4418ea010aab21ae
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "http://download.rundeck.org/deb/rundeck_${RUNDECK_VERSION}.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA1SUM \
   && ( cd /tmp; sha1sum -c SHA1SUM; ) \
   && dpkg -i /tmp/rundeck_${RUNDECK_VERSION}.deb \
-  && mv /var/lib/rundeck /var/lib/rundeck-defaults \
   && chown -R root:rundeck /etc/rundeck \
   && chmod -R 640 /etc/rundeck/* \
   && rm -f /tmp/rundeck_${RUNDECK_VERSION}.deb /tmp/SHA1SUM \
@@ -49,12 +48,25 @@ RUN set -x \
 
 # Download plugins
 RUN set -x \
-  && mkdir /opt/rundeck-plugins \
+  && mkdir -p /opt/rundeck-plugins \
   && ANSIBLE_PLUGIN_VERSION=2.2.2 \
   && wget --no-verbose -O /opt/rundeck-plugins/ansible-plugin-${ANSIBLE_PLUGIN_VERSION}.jar -L https://github.com/Batix/rundeck-ansible-plugin/releases/download/${ANSIBLE_PLUGIN_VERSION}/ansible-plugin-${ANSIBLE_PLUGIN_VERSION}.jar \
   ;
 
-VOLUME ["/var/lib/rundeck", "/var/rundeck", "/var/log/rundeck"]
+RUN set -x \
+  && mkdir -p /opt/rundeck-plugins \
+  && wget --no-verbose -O /opt/rundeck-plugins/rundeck-slack-incoming-webhook-plugin-0.6.jar -L https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/releases/download/v0.6.dev/rundeck-slack-incoming-webhook-plugin-0.6.jar \
+  ;
+
+RUN set -x \
+  && cp -a /etc/skel /home/rundeck \
+  && usermod --home /home/rundeck rundeck \
+  && chown -R rundeck:rundeck /home/rundeck \
+  ;
+
+WORKDIR /home/rundeck
+
+VOLUME ["/var/lib/rundeck/data", "/var/lib/rundeck/logs", "/var/rundeck", "/var/log/rundeck"]
 
 # Add config files
 COPY run.sh /run.sh

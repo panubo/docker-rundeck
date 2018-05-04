@@ -31,9 +31,11 @@ The global config (/etc/rundeck) is intended to be managed by the config options
 
 Following volumes should be mounted externally to persist data and config between container restarts.
 
-* /var/lib/rundeck - Rundeck database, config and plugins
+* /var/lib/rundeck/data - Rundeck database (unless using an external database, not yet implemented in this image)
+* /var/lib/rundeck/logs - Job logs
+* /home/rundeck - Localhost working/home directory
 * /var/rundeck - Rundeck projects
-* /var/log/rundeck - Logs
+* /var/log/rundeck - Rundeck system logs
 
 ## Usage
 

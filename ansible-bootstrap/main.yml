@@ -48,20 +48,6 @@
       with_items:
         - "{{ rundeck_users }}"
 
-    - name: setup /var/lib/rundeck
-      command: "cp -a /var/lib/rundeck-defaults/{{ item }} /var/lib/rundeck/{{ item }}"
-      args:
-        creates: "/var/lib/rundeck/{{ item }}"
-      with_items:
-        - bootstrap
-        - cli
-        - data
-        - exp
-        - libext
-        - logs
-        - var
-        - work
-
     - name: fix log permissions
       file:
         state: directory
@@ -78,6 +64,14 @@
         owner: rundeck
         group: rundeck
 
+    - name: fix home permissions
+      file:
+        state: directory
+        mode: "0755"
+        path: /home/rundeck
+        owner: rundeck
+        group: rundeck
+
     - name: copy plugins
       shell: cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/ && chown -R rundeck:rundeck /var/lib/rundeck/libext
 
@@ -90,22 +84,22 @@
         owner: rundeck
         group: rundeck
         mode: "0700"
-        path: /var/lib/rundeck/.ssh
+        path: /home/rundeck/.ssh
 
     - name: generate a SSH key
-      command: ssh-keygen -t rsa -b 4096 -f /var/lib/rundeck/.ssh/id_rsa -N ''
+      command: ssh-keygen -t rsa -b 4096 -f /home/rundeck/.ssh/id_rsa -N ''
       args:
-        creates: /var/lib/rundeck/.ssh/id_rsa
+        creates: /home/rundeck/.ssh/id_rsa
 
     - name: fix ssh key permissions
       file:
         owner: rundeck
         group: rundeck
         mode: "0600"
-        path: /var/lib/rundeck/.ssh/id_rsa
+        path: /home/rundeck/.ssh/id_rsa
 
     - name: get ssh pub key
-      command: cat /var/lib/rundeck/.ssh/id_rsa.pub
+      command: cat /home/rundeck/.ssh/id_rsa.pub
       register: rundeck_ssh_pub
       changed_when: false
 
