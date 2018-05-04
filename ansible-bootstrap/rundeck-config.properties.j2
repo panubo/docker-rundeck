@@ -8,3 +8,5 @@ rss.enabled=false
 grails.serverURL={{ rundeck_server_url }}
 dataSource.dbCreate = update
 dataSource.url = jdbc:h2:file:/var/lib/rundeck/data/rundeckdb;MVCC=true
+
+rundeck.api.tokens.duration.max={{ rundeck_api_auth_max_duration | default("30d") }}
