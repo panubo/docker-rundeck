@@ -7,9 +7,18 @@ ENV LC_ALL C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl vim awscli jq openjdk-8-jre-headless openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl vim awscli jq openjdk-8-jre-headless openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
+  ;
+
+# Install Google Cloud SDK
+RUN set -x \
+  && export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
+  && echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+  && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+  && apt-get update -y \
+  && apt-get install google-cloud-sdk -y \
   ;
 
 # Install Dumb-init
@@ -24,8 +33,8 @@ RUN set -x \
   ;
 
 # Install rundeck
-ENV RUNDECK_VERSION 2.11.0-1-GA_all
-ENV RUNDECK_CHECKSUM 4354401b42bb140687816adc4418ea010aab21ae
+ENV RUNDECK_VERSION 2.11.5-1-GA_all
+ENV RUNDECK_CHECKSUM 002037314382f8f7d0052ef4d4c961ae76e0ac6d
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "http://download.rundeck.org/deb/rundeck_${RUNDECK_VERSION}.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA1SUM \
