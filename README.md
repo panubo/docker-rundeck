@@ -25,7 +25,7 @@ rundeck_users:
     roles: "user"
 
   - user: user3
-    password:$6$Q8...$...
+    password: $6$Q8...$...
     roles: "user,admin"
 ```
 
