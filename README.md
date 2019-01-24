@@ -50,10 +50,11 @@ docker run --rm -it --name rundeck -p 4440:4440 \
   docker.io/panubo/rundeck:latest
 ```
 
-The container bootstrap does not support SSL, it is intended that Rundeck is run behind an SSL terminating proxy such as Nginx, Haproxy or a cloud load balancer service.
+The container bootstrap does not support SSL. It is intended that Rundeck is run behind an SSL terminating proxy such as Nginx, Haproxy or a cloud load balancer service.
 
 ## Plugins
 
 The following plugins are installed (excluding the base plugins)
 
-* Ansible
+* [Ansible](https://github.com/Batix/rundeck-ansible-plugin/)
+* [Kubernetes](https://github.com/rundeck-plugins/kubernetes/)
