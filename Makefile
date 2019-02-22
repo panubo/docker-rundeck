@@ -11,7 +11,7 @@ DOCKER_VOLUMES := -v $(shell pwd)/config.yaml:/config/config.yaml \
 
 .PHONY: build bash run push
 build:
-	docker build -t ${IMAGE_NAME}:${TAG} .
+	docker build --pull -t ${IMAGE_NAME}:${TAG} .
 
 bash:
 	docker run --rm -it --name rundeck -p 4440:4440 $(DOCKER_VOLUMES) --entrypoint /bin/bash ${IMAGE_NAME}:${TAG}
