@@ -1,0 +1,25 @@
+---
+
+rundeck_uuid: "{{ inventory_hostname | to_uuid }}"
+
+rundeck_server_url: http://localhost:4440
+
+rundeck_api_auth_max_duration: "30d"
+
+# Password is the same as the username
+rundeck_users:
+  - user: admin1
+    password: $6$cbZWoutNzmk3UYpi$.hU4aGWXfHjCMKQIwaoCL31E4UFEtMaUJkOmdtiXyUhB14IXbz2imt3BL7/TNnOVJzGwZLG1qGsX93a5sFYyG.
+    roles: "user,admin"
+
+  - user: admin2
+    password: $6$uAKdbuxdzyxcyuor$Kw/4rsK2jwQusvgO.5KVW9W2M6Kkn1JuB8h/n6oS7Xv9XosvVIbmmpcSZqUz1gRiau7TQTL7BlhGGIRhtUwCX/
+    roles: "user,admin"
+
+  - user: user1
+    password: $6$dhnmcZto.nmWi.gk$Td6e24OjJ2shwRpobhOipgOQ.SiI8H6DPnvddYTv2FNPMWydFc/vB.s8rQgmdvHz7Uxc4X/P4Kmd4Pz2oE2mK1
+    roles: "user"
+
+  - user: user2
+    password: $6$znBViWuwu.wg8wVW$Mtocl/ihYgbl0ejyoEQbVJXlSCgISqmdfcb7Wa230V5kboJj1.cFav9d0b.F29k5IcyzIn5VqErrRcScNrezX/
+    roles: "user"

@@ -72,6 +72,14 @@
         owner: rundeck
         group: rundeck
 
+    - name: fix data permissions
+      file:
+        state: directory
+        mode: "0750"
+        path: /var/lib/rundeck/data
+        owner: rundeck
+        group: rundeck
+
     - name: copy plugins
       shell: cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/ && chown -R rundeck:rundeck /var/lib/rundeck/libext
 

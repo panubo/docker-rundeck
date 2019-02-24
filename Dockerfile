@@ -33,8 +33,8 @@ RUN set -x \
   ;
 
 # Install rundeck
-ENV RUNDECK_VERSION 2.11.5-1-GA_all
-ENV RUNDECK_CHECKSUM 002037314382f8f7d0052ef4d4c961ae76e0ac6d
+ENV RUNDECK_VERSION 3.0.13.20190123-1.201901240147_all
+ENV RUNDECK_CHECKSUM 3244963d279638ecae54ca2c9139971b610e8b98
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "http://download.rundeck.org/deb/rundeck_${RUNDECK_VERSION}.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA1SUM \
