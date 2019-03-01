@@ -12,3 +12,6 @@ dataSource.url = jdbc:h2:file:/var/lib/rundeck/data/rundeckdb;MVCC=true
 rundeck.api.tokens.duration.max={{ rundeck_api_auth_max_duration | default("30d") }}
 
 rundeck.log4j.config.file=/etc/rundeck/log4j.properties
+
+# Workaround for https://github.com/rundeck/rundeck/issues/4417
+rundeck.security.httpHeaders.provider.csp.enabled=false
