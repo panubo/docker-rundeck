@@ -32,9 +32,9 @@ RUN set -x \
   && rm /usr/local/bin/SHA256SUM \
   ;
 
-# Install rundeck
-ENV RUNDECK_VERSION 3.0.13.20190123-1.201901240147_all
-ENV RUNDECK_CHECKSUM 3244963d279638ecae54ca2c9139971b610e8b98
+# Install Rundeck
+ENV RUNDECK_VERSION 3.0.16.20190223-1.201902232324_all
+ENV RUNDECK_CHECKSUM e1ad055cec06ac5171066690a3804e8d96b72104
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "http://download.rundeck.org/deb/rundeck_${RUNDECK_VERSION}.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA1SUM \
@@ -80,7 +80,14 @@ RUN set -x \
 
 RUN set -x \
   && mkdir -p /opt/rundeck-plugins \
-  && wget --no-verbose -O /opt/rundeck-plugins/rundeck-slack-incoming-webhook-plugin-0.6.jar -L https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/releases/download/v0.6.dev/rundeck-slack-incoming-webhook-plugin-0.6.jar \
+  && EC2NODES_PLUGIN_VERSION=1.5.9 \
+  && wget --no-verbose -O /opt/rundeck-plugins/rundeck-ec2-nodes-plugin-${EC2NODES_PLUGIN_VERSION}.jar -L https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v${EC2NODES_PLUGIN_VERSION}/rundeck-ec2-nodes-plugin-${EC2NODES_PLUGIN_VERSION}.jar \
+  ;
+
+RUN set -x \
+  && mkdir -p /opt/rundeck-plugins \
+  && SLACKWEBHOOK_PLUGIN_VERSION=0.10 \
+  && wget --no-verbose -O /opt/rundeck-plugins/rundeck-slack-incoming-webhook-plugin-${SLACKWEBHOOK_PLUGIN_VERSION}.jar -L https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/releases/download/v${SLACKWEBHOOK_PLUGIN_VERSION}.dev/rundeck-slack-incoming-webhook-plugin-${SLACKWEBHOOK_PLUGIN_VERSION}.jar \
   ;
 
 RUN set -x \
