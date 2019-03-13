@@ -9,7 +9,7 @@ DOCKER_VOLUMES := -v $(shell pwd)/config.yaml:/config/config.yaml \
 	-v $(shell pwd)/test/var:/var/rundeck \
 	-v $(shell pwd)/test/log:/var/log/rundeck
 
-.PHONY: build bash run push
+.PHONY: build bash run push clean
 build:
 	docker build --pull -t ${IMAGE_NAME}:${TAG} .
 
@@ -22,3 +22,6 @@ run:
 push:
 	docker tag ${IMAGE_NAME}:${TAG} ${REGISTRY}/${IMAGE_NAME}:${TAG}
 	docker push ${REGISTRY}/${IMAGE_NAME}:${TAG}
+
+clean:
+	docker rmi ${IMAGE_NAME}:${TAG}
