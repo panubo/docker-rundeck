@@ -22,27 +22,27 @@ RUN set -x \
   ;
 
 # Install Dumb-init
-ENV DUMB_INIT_VERSION=1.2.1
-ENV DUMB_INIT_CHECKSUM=057ecd4ac1d3c3be31f82fc0848bf77b1326a975b4f8423fe31607205a0fe945
+ENV DUMB_INIT_VERSION=1.2.2
+ENV DUMB_INIT_CHECKSUM=37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9
 RUN set -x \
   && wget --no-verbose -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 \
   && echo "${DUMB_INIT_CHECKSUM}  dumb-init" > /usr/local/bin/SHA256SUM \
   && ( cd /usr/local/bin; sha256sum -c SHA256SUM; ) \
   && chmod +x /usr/local/bin/dumb-init \
-  && rm /usr/local/bin/SHA256SUM \
+  && rm -f /usr/local/bin/SHA256SUM \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION 3.0.16.20190223-1.201902232324_all
-ENV RUNDECK_CHECKSUM e1ad055cec06ac5171066690a3804e8d96b72104
+ENV RUNDECK_VERSION=3.1.2.20190927-1_all
+ENV RUNDECK_CHECKSUM=20d84acc1dc14506e9d5bdff2ac080db30c87fb076220842815608db4fd27955
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "http://download.rundeck.org/deb/rundeck_${RUNDECK_VERSION}.deb" \
-  && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA1SUM \
-  && ( cd /tmp; sha1sum -c SHA1SUM; ) \
+  && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM; ) \
   && dpkg -i /tmp/rundeck_${RUNDECK_VERSION}.deb \
   && chown -R root:rundeck /etc/rundeck \
   && chmod -R 640 /etc/rundeck/* \
-  && rm -f /tmp/rundeck_${RUNDECK_VERSION}.deb /tmp/SHA1SUM \
+  && rm -f /tmp/rundeck_${RUNDECK_VERSION}.deb /tmp/SHA256SUM \
   ;
 
 # Install Ansible
@@ -66,29 +66,8 @@ RUN set -x \
   ;
 
 # Download plugins
-RUN set -x \
-  && mkdir -p /opt/rundeck-plugins \
-  && ANSIBLE_PLUGIN_VERSION=2.2.2 \
-  && wget --no-verbose -O /opt/rundeck-plugins/ansible-plugin-${ANSIBLE_PLUGIN_VERSION}.jar -L https://github.com/Batix/rundeck-ansible-plugin/releases/download/${ANSIBLE_PLUGIN_VERSION}/ansible-plugin-${ANSIBLE_PLUGIN_VERSION}.jar \
-  ;
-
-RUN set -x \
-  && mkdir -p /opt/rundeck-plugins \
-  && KUBERNETES_PLUGIN_VERSION=1.0.9 \
-  && wget --no-verbose -O /opt/rundeck-plugins/kubernetes-plugin-${KUBERNETES_PLUGIN_VERSION}.zip -L https://github.com/rundeck-plugins/kubernetes/releases/download/${KUBERNETES_PLUGIN_VERSION}/kubernetes-plugin-${KUBERNETES_PLUGIN_VERSION}.zip \
-  ;
-
-RUN set -x \
-  && mkdir -p /opt/rundeck-plugins \
-  && EC2NODES_PLUGIN_VERSION=1.5.9 \
-  && wget --no-verbose -O /opt/rundeck-plugins/rundeck-ec2-nodes-plugin-${EC2NODES_PLUGIN_VERSION}.jar -L https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v${EC2NODES_PLUGIN_VERSION}/rundeck-ec2-nodes-plugin-${EC2NODES_PLUGIN_VERSION}.jar \
-  ;
-
-RUN set -x \
-  && mkdir -p /opt/rundeck-plugins \
-  && SLACKWEBHOOK_PLUGIN_VERSION=0.10 \
-  && wget --no-verbose -O /opt/rundeck-plugins/rundeck-slack-incoming-webhook-plugin-${SLACKWEBHOOK_PLUGIN_VERSION}.jar -L https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/releases/download/v${SLACKWEBHOOK_PLUGIN_VERSION}.dev/rundeck-slack-incoming-webhook-plugin-${SLACKWEBHOOK_PLUGIN_VERSION}.jar \
-  ;
+ADD install-plugins.sh /
+RUN /install-plugins.sh
 
 RUN set -x \
   && cp -a /etc/skel /home/rundeck \
