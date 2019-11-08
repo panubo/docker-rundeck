@@ -1,6 +1,7 @@
 # Rundeck
 
-The docker image contains [Rundeck](http://rundeck.org/) and [Ansible](https://www.ansible.com/). The image configures Rundeck to use Pam authentication so we can use secure password hashes (SHA512 CRYPT) that aren't supported by JAAS (OBF, MD5 and CRYPT).
+The Docker image contains [Rundeck](http://rundeck.org/) and [Ansible](https://www.ansible.com/).
+The image configures Rundeck to use Pam authentication so we can use secure password hashes (SHA512 CRYPT) that aren't supported by JAAS (OBF, MD5 and CRYPT).
 
 ## Config
 
@@ -29,9 +30,9 @@ rundeck_users:
     roles: "user,admin"
 ```
 
-The global config (/etc/rundeck) is intended to be managed by the config options above and not editable at runtime.
+The global config (`/etc/rundeck`) is intended to be managed by the config options above and not editable at runtime.
 
-Following volumes should be mounted externally to persist data and config between container restarts.
+The following volumes should be mounted externally to persist data and config between container restarts:
 
 * /var/lib/rundeck/data - Rundeck database (unless using an external database, not yet implemented in this image)
 * /var/lib/rundeck/logs - Job logs
@@ -54,7 +55,9 @@ The container bootstrap does not support SSL. It is intended that Rundeck is run
 
 ## Plugins
 
-The following plugins are installed (excluding the base plugins)
+The following plugins are installed (excluding the base plugins):
 
 * [Ansible](https://github.com/Batix/rundeck-ansible-plugin/)
 * [Kubernetes](https://github.com/rundeck-plugins/kubernetes/)
+* [EC2 Nodes](https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/)
+* [Slack Incoming Webhook](https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/)
