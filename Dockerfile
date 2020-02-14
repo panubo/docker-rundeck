@@ -1,4 +1,4 @@
-FROM docker.io/debian:stretch
+FROM docker.io/debian:buster
 
 # Set encoding
 ENV LANG C.UTF-8
@@ -7,7 +7,17 @@ ENV LC_ALL C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl vim awscli jq openjdk-8-jre-headless openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl vim awscli jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  ;
+
+# Install JDK8 (required)
+RUN set -x \
+  && echo "deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb buster main" | tee -a /etc/apt/sources.list.d/adoptopenjdk.list \
+  && curl https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - \
+  && apt-get update \
+  && apt-get -y install adoptopenjdk-8-hotspot \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
@@ -15,10 +25,12 @@ RUN set -x \
 # Install Google Cloud SDK
 RUN set -x \
   && export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
-  && echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+  && echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
   && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
-  && apt-get update -y \
-  && apt-get install google-cloud-sdk -y \
+  && apt-get update \
+  && apt-get install -y google-cloud-sdk \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
   ;
 
 # Install Dumb-init
