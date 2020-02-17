@@ -1,11 +1,16 @@
 # Rundeck
 
-The Docker image contains [Rundeck](http://rundeck.org/) and [Ansible](https://www.ansible.com/).
-The image configures Rundeck to use Pam authentication so we can use secure password hashes (SHA512 CRYPT) that aren't supported by JAAS (OBF, MD5 and CRYPT).
+Docker image with [Rundeck](http://rundeck.org/) and [Ansible](https://www.ansible.com/).
+
+This image configures Rundeck to use PAM authentication so we can use secure password hashes (SHA512 CRYPT) that aren't supported by JAAS (OBF, MD5 and CRYPT).
+
+The configuration is fairly opinionated, and is probably not suitable as a general purpose image. H2 database (embedded) is used to reduce external dependencies.
 
 ## Config
 
 Mount the yaml config file into the container at `/config/config.yaml` (Could be done via a Docker volume mount or Kubernetes configmap)
+
+Example:
 
 ```
 ---
@@ -30,9 +35,9 @@ rundeck_users:
     roles: "user,admin"
 ```
 
-The global config (`/etc/rundeck`) is intended to be managed by the config options above and not editable at runtime.
+The global config (`/etc/rundeck`) directory is intended to be managed by the config options above and not editable at runtime.
 
-The following volumes should be mounted externally to persist data and config between container restarts:
+The following volumes should be mounted externally to persist data and configuration between container restarts:
 
 * /var/lib/rundeck/data - Rundeck database (unless using an external database, not yet implemented in this image)
 * /var/lib/rundeck/logs - Job logs
@@ -41,6 +46,8 @@ The following volumes should be mounted externally to persist data and config be
 * /var/log/rundeck - Rundeck system logs
 
 ## Usage
+
+Example runtime usage:
 
 ```
 docker run --rm -it --name rundeck -p 4440:4440 \
@@ -51,13 +58,19 @@ docker run --rm -it --name rundeck -p 4440:4440 \
   docker.io/panubo/rundeck:latest
 ```
 
-The container bootstrap does not support SSL. It is intended that Rundeck is run behind an SSL terminating proxy such as Nginx, Haproxy or a cloud load balancer service.
+The container bootstrap does not support SSL. It is intended that this image is run behind an SSL terminating proxy such as Nginx, HAProxy or a cloud load balancer service.
+
+For production use please use a release tag rather than the `latest` floating tag.
 
 ## Plugins
 
 The following plugins are installed (excluding the base plugins):
 
 * [Ansible](https://github.com/Batix/rundeck-ansible-plugin/)
-* [Kubernetes](https://github.com/rundeck-plugins/kubernetes/)
 * [EC2 Nodes](https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/)
+* [Kubernetes](https://github.com/rundeck-plugins/kubernetes/)
 * [Slack Incoming Webhook](https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/)
+
+## Status
+
+Stable and production ready.
