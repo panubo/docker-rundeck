@@ -7,7 +7,7 @@ ENV LC_ALL C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl vim awscli jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
@@ -18,6 +18,23 @@ RUN set -x \
   && curl https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - \
   && apt-get update \
   && apt-get -y install adoptopenjdk-8-hotspot \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  ;
+
+# Install AWS CLI
+ENV AWS_CLI_VERSION=1.18.61
+ENV AWS_CLI_CHECKSUM=a376e8b54b105cd2a314906e38a25dfe37315990a13979e188b033dcfa5b9f18
+RUN set -x \
+  && apt-get update \
+  && apt-get -y install python unzip \
+  && cd /tmp \
+  && wget -nv https://s3.amazonaws.com/aws-cli/awscli-bundle-${AWS_CLI_VERSION}.zip -O /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
+  && echo "${AWS_CLI_CHECKSUM}  awscli-bundle-${AWS_CLI_VERSION}.zip" > /tmp/SHA256SUM \
+  && sha256sum -c SHA256SUM \
+  && unzip awscli-bundle-${AWS_CLI_VERSION}.zip \
+  && /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+  && apt-get -y remove unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
@@ -45,8 +62,8 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=3.2.2.20200204-1_all
-ENV RUNDECK_CHECKSUM=7e1aaf32390cf8c8e1be1d6cce3cea11b0eb433835ec059a513917004d2d2fe2
+ENV RUNDECK_VERSION=3.2.6.20200427-1_all
+ENV RUNDECK_CHECKSUM=1b136f09f57fc0a8a7b8471a125cf95e7bbfc2872d600f78d7ab09d53826b7f0
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://dl.bintray.com/rundeck/rundeck-deb/rundeck_${RUNDECK_VERSION}.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
