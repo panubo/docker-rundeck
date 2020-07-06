@@ -35,86 +35,86 @@ SOPS_3_5_0_CHECKSUM=610fca9687d1326ef2e1a66699a740f5dbd5ac8130190275959da737ec52
 LEGO_3_7_0_CHECKSUM=d2328f3e087c1465c2582d9d38c992cdab460a24a7a89d3260af83cd143a8b39
 
 install_sops() {
-	local version checksum checksum_var
-	version="${1}"
-	checksum_var="SOPS_${version//\./_}_CHECKSUM"
-	checksum="${!checksum_var}"
+  local version checksum checksum_var
+  version="${1}"
+  checksum_var="SOPS_${version//\./_}_CHECKSUM"
+  checksum="${!checksum_var}"
 
-	echo "https://github.com/mozilla/sops/releases/download/v${version}/sops-v${version}.linux"
-	echo "${checksum}"
+  echo "https://github.com/mozilla/sops/releases/download/v${version}/sops-v${version}.linux"
+  echo "${checksum}"
 
-	wget -nv "https://github.com/mozilla/sops/releases/download/v${version}/sops-v${version}.linux"
-	echo "${checksum}  sops-v${version}.linux" > SHA256SUM
-	sha256sum -c SHA256SUM
+  wget -nv "https://github.com/mozilla/sops/releases/download/v${version}/sops-v${version}.linux"
+  echo "${checksum}  sops-v${version}.linux" > SHA256SUM
+  sha256sum -c SHA256SUM
 
-	chmod 755 "sops-v${version}.linux"
-	chown root:root "sops-v${version}.linux"
-	mv "sops-v${version}.linux" /opt/bin/sops
+  chmod 755 "sops-v${version}.linux"
+  chown root:root "sops-v${version}.linux"
+  mv "sops-v${version}.linux" /opt/bin/sops
 }
 
 install_lego() {
-	local version checksum checksum_var
-	version="${1}"
-	checksum_var="LEGO_${version//\./_}_CHECKSUM"
-	checksum="${!checksum_var}"
+  local version checksum checksum_var
+  version="${1}"
+  checksum_var="LEGO_${version//\./_}_CHECKSUM"
+  checksum="${!checksum_var}"
 
-	echo "https://github.com/xenolf/lego/releases/download/v${version}/lego_v${version}_linux_amd64.tar.gz"
-	echo "${checksum}"
+  echo "https://github.com/xenolf/lego/releases/download/v${version}/lego_v${version}_linux_amd64.tar.gz"
+  echo "${checksum}"
 
-	wget -nv "https://github.com/xenolf/lego/releases/download/v${version}/lego_v${version}_linux_amd64.tar.gz"
-	echo "${checksum}  lego_v${version}_linux_amd64.tar.gz" > SHA256SUM
-	sha256sum -c SHA256SUM
+  wget -nv "https://github.com/xenolf/lego/releases/download/v${version}/lego_v${version}_linux_amd64.tar.gz"
+  echo "${checksum}  lego_v${version}_linux_amd64.tar.gz" > SHA256SUM
+  sha256sum -c SHA256SUM
 
-	tar -zxf "lego_v${version}_linux_amd64.tar.gz" lego
-	chmod 755 lego
-	chown root:root lego
-	mv lego /opt/bin/lego
+  tar -zxf "lego_v${version}_linux_amd64.tar.gz" lego
+  chmod 755 lego
+  chown root:root lego
+  mv lego /opt/bin/lego
 }
 
 install_helm() {
-	local version checksum checksum_var version_parts major_minor
-	version="${1}"
-	checksum_var="HELM_${version//\./_}_CHECKSUM"
-	checksum="${!checksum_var}"
+  local version checksum checksum_var version_parts major_minor
+  version="${1}"
+  checksum_var="HELM_${version//\./_}_CHECKSUM"
+  checksum="${!checksum_var}"
 
-	IFS='.' read -r -a version_parts <<<"${version}"
-	major_minor="${version_parts[0]}.${version_parts[1]}"
+  IFS='.' read -r -a version_parts <<<"${version}"
+  major_minor="${version_parts[0]}.${version_parts[1]}"
 
     echo "https://get.helm.sh/helm-v${version}-linux-amd64.tar.gz"
     echo "${checksum}"
 
     wget -nv "https://get.helm.sh/helm-v${version}-linux-amd64.tar.gz"
-	echo "${checksum}  helm-v${version}-linux-amd64.tar.gz" > SHA256SUM
-	sha256sum -c SHA256SUM
+  echo "${checksum}  helm-v${version}-linux-amd64.tar.gz" > SHA256SUM
+  sha256sum -c SHA256SUM
 
-	tar -zxf "helm-v${version}-linux-amd64.tar.gz" linux-amd64/helm
-	chmod 755 linux-amd64/helm
-	chown root:root linux-amd64/helm
-	mkdir -p "/opt/helm-${major_minor}/bin"
-	mv linux-amd64/helm "/opt/helm-${major_minor}/bin/helm"
+  tar -zxf "helm-v${version}-linux-amd64.tar.gz" linux-amd64/helm
+  chmod 755 linux-amd64/helm
+  chown root:root linux-amd64/helm
+  mkdir -p "/opt/helm-${major_minor}/bin"
+  mv linux-amd64/helm "/opt/helm-${major_minor}/bin/helm"
 }
 
 install_kubectl() {
-	local version checksum checksum_var version_parts major_minor
-	version="${1}"
-	checksum_var="KUBECTL_${version//\./_}_CHECKSUM"
-	checksum="${!checksum_var}"
+  local version checksum checksum_var version_parts major_minor
+  version="${1}"
+  checksum_var="KUBECTL_${version//\./_}_CHECKSUM"
+  checksum="${!checksum_var}"
 
-	IFS='.' read -r -a version_parts <<<"${version}"
-	major_minor="${version_parts[0]}.${version_parts[1]}"
+  IFS='.' read -r -a version_parts <<<"${version}"
+  major_minor="${version_parts[0]}.${version_parts[1]}"
 
-	echo "https://storage.googleapis.com/kubernetes-release/release/v${version}/bin/linux/amd64/kubectl"
+  echo "https://storage.googleapis.com/kubernetes-release/release/v${version}/bin/linux/amd64/kubectl"
     echo "${checksum}"
 
-	wget -nv "https://storage.googleapis.com/kubernetes-release/release/v${version}/bin/linux/amd64/kubectl"
-	echo "${checksum}  kubectl" > SHA256SUM
-	sha256sum kubectl
-	sha256sum -c SHA256SUM
+  wget -nv "https://storage.googleapis.com/kubernetes-release/release/v${version}/bin/linux/amd64/kubectl"
+  echo "${checksum}  kubectl" > SHA256SUM
+  sha256sum kubectl
+  sha256sum -c SHA256SUM
 
-	chmod 755 kubectl
-	chown root:root kubectl
-	mkdir -p "/opt/kubectl-${major_minor}/bin"
-	mv kubectl "/opt/kubectl-${major_minor}/bin/kubectl"
+  chmod 755 kubectl
+  chown root:root kubectl
+  mkdir -p "/opt/kubectl-${major_minor}/bin"
+  mv kubectl "/opt/kubectl-${major_minor}/bin/kubectl"
 }
 
 install_sops 3.5.0
