@@ -62,8 +62,8 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=3.2.6.20200427-1_all
-ENV RUNDECK_CHECKSUM=1b136f09f57fc0a8a7b8471a125cf95e7bbfc2872d600f78d7ab09d53826b7f0
+ENV RUNDECK_VERSION=3.2.8.20200608-1_all
+ENV RUNDECK_CHECKSUM=a01301a2138eb80281f8ca7cc41a1d946d65d23eca91da5f5f1a69ec15e91611
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://dl.bintray.com/rundeck/rundeck-deb/rundeck_${RUNDECK_VERSION}.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
