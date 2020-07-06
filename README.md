@@ -71,6 +71,20 @@ The following plugins are installed (excluding the base plugins):
 * [Kubernetes](https://github.com/rundeck-plugins/kubernetes/)
 * [Slack Incoming Webhook](https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/)
 
+## Tools
+
+The following tools are pre-installed in the image
+
+* [Ansible](https://www.ansible.com/)
+* [awscli](https://aws.amazon.com/cli/)
+* [gcloud cli](https://cloud.google.com/sdk/)
+* [mozilla/sops](https://github.com/mozilla/sops)
+* [go-acme/lego](https://github.com/go-acme/lego)
+* [helm](https://helm.sh/) **VERSIONED**
+* [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) **VERSIONED**
+
+**VERSIONED** tools are not in the PATH by default, script need to call the version they want directly.
+
 ## Status
 
 Stable and production ready.

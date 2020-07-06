@@ -23,8 +23,8 @@ RUN set -x \
   ;
 
 # Install AWS CLI
-ENV AWS_CLI_VERSION=1.18.61
-ENV AWS_CLI_CHECKSUM=a376e8b54b105cd2a314906e38a25dfe37315990a13979e188b033dcfa5b9f18
+ENV AWS_CLI_VERSION=1.18.93
+ENV AWS_CLI_CHECKSUM=37eaa4d25cb1b9786af4ab6858cce7dfca154d264554934690d99994a7bbd7a5
 RUN set -x \
   && apt-get update \
   && apt-get -y install python unzip \
@@ -95,8 +95,17 @@ RUN set -x \
   ;
 
 # Download plugins
-ADD install-plugins.sh /
+COPY install-plugins.sh /
 RUN /install-plugins.sh
+
+# Install tools
+COPY install-tools.sh /
+RUN set -x \
+  && mkdir /opt/bin \
+  && /install-tools.sh \
+  ;
+
+ENV PATH=/usr/local/sbin:/usr/local/bin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN set -x \
   && cp -a /etc/skel /home/rundeck \
