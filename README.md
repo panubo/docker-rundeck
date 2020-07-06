@@ -83,7 +83,40 @@ The following tools are pre-installed in the image
 * [helm](https://helm.sh/) **VERSIONED**
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) **VERSIONED**
 
-**VERSIONED** tools are not in the PATH by default, script need to call the version they want directly.
+**VERSIONED** tools are not in the PATH by default, script need to call the version they want directly. Versions of these tools are shortened to MAJOR.MINOR so any PATCH releases can be upgraded in-place.
+
+The directory structure looks like:
+
+```
+/opt
+├── bin
+│   ├── lego
+│   └── sops
+├── helm-2.14
+│   └── bin
+│       └── helm
+├── helm-2.9
+│   └── bin
+│       └── helm
+├── helm-3.2
+│   └── bin
+│       └── helm
+├── kubectl-1.11
+│   └── bin
+│       └── kubectl
+├── kubectl-1.12
+│   └── bin
+│       └── kubectl
+├── kubectl-1.13
+│   └── bin
+│       └── kubectl
+├── kubectl-1.14
+│   └── bin
+│       └── kubectl
+└── kubectl-1.15
+    └── bin
+        └── kubectl
+```
 
 ## Status
 

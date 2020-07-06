@@ -72,10 +72,13 @@ install_lego() {
 }
 
 install_helm() {
-	local version checksum checksum_var
+	local version checksum checksum_var version_parts major_minor
 	version="${1}"
 	checksum_var="HELM_${version//\./_}_CHECKSUM"
 	checksum="${!checksum_var}"
+
+	IFS='.' read -r -a version_parts <<<"${version}"
+	major_minor="${version_parts[0]}.${version_parts[1]}"
 
     echo "https://get.helm.sh/helm-v${version}-linux-amd64.tar.gz"
     echo "${checksum}"
@@ -87,15 +90,18 @@ install_helm() {
 	tar -zxf "helm-v${version}-linux-amd64.tar.gz" linux-amd64/helm
 	chmod 755 linux-amd64/helm
 	chown root:root linux-amd64/helm
-	mkdir -p "/opt/helm-${version}/bin"
-	mv linux-amd64/helm "/opt/helm-${version}/bin/helm"
+	mkdir -p "/opt/helm-${major_minor}/bin"
+	mv linux-amd64/helm "/opt/helm-${major_minor}/bin/helm"
 }
 
 install_kubectl() {
-	local version checksum checksum_var
+	local version checksum checksum_var version_parts major_minor
 	version="${1}"
 	checksum_var="KUBECTL_${version//\./_}_CHECKSUM"
 	checksum="${!checksum_var}"
+
+	IFS='.' read -r -a version_parts <<<"${version}"
+	major_minor="${version_parts[0]}.${version_parts[1]}"
 
 	echo "https://storage.googleapis.com/kubernetes-release/release/v${version}/bin/linux/amd64/kubectl"
     echo "${checksum}"
@@ -107,8 +113,8 @@ install_kubectl() {
 
 	chmod 755 kubectl
 	chown root:root kubectl
-	mkdir -p "/opt/kubectl-${version}/bin"
-	mv kubectl "/opt/kubectl-${version}/bin/kubectl"
+	mkdir -p "/opt/kubectl-${major_minor}/bin"
+	mv kubectl "/opt/kubectl-${major_minor}/bin/kubectl"
 }
 
 install_sops 3.5.0
