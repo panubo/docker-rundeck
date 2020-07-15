@@ -94,6 +94,21 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
+# Install skopeo
+RUN set -x \
+  && echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
+  && wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_10/Release.key -O- | apt-key add - \
+  && apt-get update \
+  && apt-get install --no-install-recommends --no-install-suggests -y skopeo \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  ;
+
+# Install apprise github.com/caronc/apprise
+RUN set -x \
+  && pip install apprise==0.8.6 \
+  ;
+
 # Download plugins
 COPY install-plugins.sh /
 RUN /install-plugins.sh
