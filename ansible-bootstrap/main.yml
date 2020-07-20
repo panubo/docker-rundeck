@@ -15,6 +15,11 @@
     #     rundeck_uuid: "{{ rundeck_uuid_raw.stdout }}"
     #   check_mode: no
 
+    - name: create /var/lib/rundeck/i18n directory
+      file:
+        state: directory
+        path: /var/lib/rundeck/i18n
+
     - name: write config file(s)
       template:
         dest: "/etc/rundeck/{{ item.name }}"
@@ -30,6 +35,17 @@
         - name: jaas-loginmodule.conf
           mode: "0640"
         - name: realm.properties
+          mode: "0640"
+
+    - name: write i18n config file(s)
+      template:
+        dest: "/var/lib/rundeck/i18n/{{ item.name }}"
+        src: "{{ item.name }}.j2"
+        mode: "{{ item.mode }}"
+        owner: rundeck
+        group: rundeck
+      with_items:
+        - name: messages.properties
           mode: "0640"
 
     - name: add rundeck pam.d
