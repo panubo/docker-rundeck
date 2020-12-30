@@ -101,6 +101,9 @@ The directory structure looks like:
 ├── helm-3.2
 │   └── bin
 │       └── helm
+├── helm-3.4
+│   └── bin
+│       └── helm
 ├── kubectl-1.11
 │   └── bin
 │       └── kubectl
