@@ -124,3 +124,7 @@ The directory structure looks like:
 ## Status
 
 Stable and production ready.
+
+## Upgrade
+
+Find the latest version of rundeck at https://docs.rundeck.com/downloads.html
