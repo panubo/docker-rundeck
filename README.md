@@ -127,4 +127,4 @@ Stable and production ready.
 
 ## Upgrade
 
-Find the latest version of rundeck at https://docs.rundeck.com/downloads.html
+Find the latest version of Rundeck at https://docs.rundeck.com/downloads.html
