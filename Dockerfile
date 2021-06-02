@@ -23,8 +23,8 @@ RUN set -x \
   ;
 
 # Install AWS CLI
-ENV AWS_CLI_VERSION=1.18.93
-ENV AWS_CLI_CHECKSUM=37eaa4d25cb1b9786af4ab6858cce7dfca154d264554934690d99994a7bbd7a5
+ENV AWS_CLI_VERSION=1.19.16
+ENV AWS_CLI_CHECKSUM=5b1af214aa8cc1afe6badd056d3c16d411872d4ab1e5a9da515c3cecbd491de4
 RUN set -x \
   && apt-get update \
   && apt-get -y install python unzip \
@@ -62,12 +62,12 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=3.3.10.20210301-1_all
-ENV RUNDECK_CHECKSUM=1a2a1fcf2f2103c5f438f84de549f99bb42d52be971ab7b745e285bf17955074
+ENV RUNDECK_VERSION=3.3.12.20210521-1_all
+ENV RUNDECK_CHECKSUM=f404f379ce56a719e61f23487a781343847931b69ef128e16ae4ffdb0b7d40a6
 RUN set -x \
-  && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://dl.bintray.com/rundeck/rundeck-deb/rundeck_${RUNDECK_VERSION}.deb" \
+  && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
-  && ( cd /tmp; sha256sum -c SHA256SUM; ) \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum rundeck_${RUNDECK_VERSION}.deb)"; exit 1; )) \
   && dpkg -i /tmp/rundeck_${RUNDECK_VERSION}.deb \
   && chown -R root:rundeck /etc/rundeck \
   && chmod -R 640 /etc/rundeck/* \
