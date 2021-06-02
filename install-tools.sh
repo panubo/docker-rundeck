@@ -14,13 +14,12 @@ trap finish EXIT
 cd "${TEMP_DIR}"
 echo "PWD: $(pwd)"
 
+
+KUBECTL_1_18_19_CHECKSUM=332820433bc7695801bcf6e8444856fc7daae97fc9261b918d491110d67be116
 KUBECTL_1_17_17_CHECKSUM=8329fac94c66bf7a475b630972a8c0b036bab1f28a5584115e8dd26483de8349
 KUBECTL_1_16_15_CHECKSUM=e8913069293156ddf55f243814a22d2384fc18b165efb6200606fdeaad146605
-
 KUBECTL_1_15_12_CHECKSUM=a32b762279c33cb8d8f4198f3facdae402248c3164e9b9b664c3afbd5a27472e
-# KUBECTL_1_15_11_CHECKSUM=4b9053d6ffd34c68a16af1d99855e68d27b7578f75382f19648d425f29f0fbc5
 KUBECTL_1_14_10_CHECKSUM=7729c6612bec76badc7926a79b26e0d9b06cc312af46dbb80ea7416d1fce0b36
-# KUBECTL_1_14_8_CHECKSUM=85548a113564f34e5e60253f8b1616eed0e8c171a6869668beb93d1f97fbea8e
 KUBECTL_1_13_12_CHECKSUM=3578dbaec9fd043cf2779fbc54afb4297f3e8b50df7493191313bccbb8046300
 
 HELM_3_5_2_CHECKSUM=01b317c506f8b6ad60b11b1dc3f093276bb703281cb1ae01132752253ec706a2
@@ -47,7 +46,7 @@ install_sops() {
 
   wget -nv "https://github.com/mozilla/sops/releases/download/v${version}/sops-v${version}.linux"
   echo "${checksum}  sops-v${version}.linux" > SHA256SUM
-  sha256sum -c SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum sops-v${version}.linux)"; exit 1; )
 
   chmod 755 "sops-v${version}.linux"
   chown root:root "sops-v${version}.linux"
@@ -65,7 +64,7 @@ install_lego() {
 
   wget -nv "https://github.com/xenolf/lego/releases/download/v${version}/lego_v${version}_linux_amd64.tar.gz"
   echo "${checksum}  lego_v${version}_linux_amd64.tar.gz" > SHA256SUM
-  sha256sum -c SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum lego_v${version}_linux_amd64.tar.gz)"; exit 1; )
 
   tar -zxf "lego_v${version}_linux_amd64.tar.gz" lego
   chmod 755 lego
@@ -87,7 +86,7 @@ install_helm() {
 
     wget -nv "https://get.helm.sh/helm-v${version}-linux-amd64.tar.gz"
   echo "${checksum}  helm-v${version}-linux-amd64.tar.gz" > SHA256SUM
-  sha256sum -c SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum helm-v${version}-linux-amd64.tar.gz)"; exit 1; )
 
   tar -zxf "helm-v${version}-linux-amd64.tar.gz" linux-amd64/helm
   chmod 755 linux-amd64/helm
@@ -111,7 +110,7 @@ install_kubectl() {
   wget -nv "https://storage.googleapis.com/kubernetes-release/release/v${version}/bin/linux/amd64/kubectl"
   echo "${checksum}  kubectl" > SHA256SUM
   sha256sum kubectl
-  sha256sum -c SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum kubectl)"; exit 1; )
 
   chmod 755 kubectl
   chown root:root kubectl
@@ -134,3 +133,4 @@ install_kubectl 1.14.10
 install_kubectl 1.15.12
 install_kubectl 1.16.15
 install_kubectl 1.17.17
+install_kubectl 1.18.19
