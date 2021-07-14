@@ -84,16 +84,6 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install Kubernetes SDK
-RUN set -x \
-  && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y python-pip \
-  && KUBERNETES_SDK_VERSION=8.0.1 \
-  && pip install kubernetes==${KUBERNETES_SDK_VERSION} \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  ;
-
 # Install skopeo
 RUN set -x \
   && echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
