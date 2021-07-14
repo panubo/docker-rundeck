@@ -75,6 +75,17 @@ RUN set -x \
   && rm -f /tmp/rundeck_${RUNDECK_VERSION}.deb /tmp/SHA256SUM \
   ;
 
+  # Install Rundeck CLI
+  ENV RUNDECK_CLI_VERSION=1.3.10-1_all
+  ENV RUNDECK_CLI_CHECKSUM=e9f6fb2cd051b32b452a055ce5aa7e354b21e011a9c00c76e3d624c2338a3736
+  RUN set -x \
+    && wget --no-verbose -O /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_${RUNDECK_CLI_VERSION}.deb/download.deb" \
+    && echo "${RUNDECK_CLI_CHECKSUM}  rundeck_${RUNDECK_CLI_VERSION}.deb" > /tmp/SHA256SUM \
+    && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum rundeck_${RUNDECK_CLI_VERSION}.deb)"; exit 1; )) \
+    && dpkg -i /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb \
+    && rm -f /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb /tmp/SHA256SUM \
+    ;
+
 # Install Ansible
 RUN set -x \
   && echo 'deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main' > /etc/apt/sources.list.d/ansible.list \
