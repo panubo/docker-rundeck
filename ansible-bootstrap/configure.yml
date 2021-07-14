@@ -1,0 +1,65 @@
+---
+
+# - name: get rundeck uuid
+#   command: sed -E -e '/rundeck.server.uuid/!d' -e 's/rundeck.server.uuid = ([0-9a-f\-]+)$/\1/' /etc/rundeck/framework.properties
+#   register: rundeck_uuid_raw
+#   changed_when: false
+#   check_mode: no
+
+# - name: set fact rundeck uuid
+#   set_fact:
+#     rundeck_uuid: "{{ rundeck_uuid_raw.stdout }}"
+#   check_mode: no
+
+- name: Create /var/lib/rundeck/i18n directory
+  file:
+    state: directory
+    path: /var/lib/rundeck/i18n
+
+- name: Write config file(s)
+  template:
+    dest: "/etc/rundeck/{{ item.name }}"
+    src: "templates/{{ item.name }}.j2"
+    mode: "{{ item.mode }}"
+    owner: rundeck
+    group: rundeck
+  with_items:
+    - name: rundeck-config.properties
+      mode: "0600"
+    - name: framework.properties
+      mode: "0600"
+    - name: jaas-loginmodule.conf
+      mode: "0640"
+    - name: realm.properties
+      mode: "0640"
+
+- name: Write i18n config file(s)
+  template:
+    dest: "/var/lib/rundeck/i18n/{{ item.name }}"
+    src: "templates/{{ item.name }}.j2"
+    mode: "{{ item.mode }}"
+    owner: rundeck
+    group: rundeck
+  with_items:
+    - name: messages.properties
+      mode: "0640"
+
+- name: Add rundeck pam.d
+  template: src=templates/pam.d_rundeck.j2 dest=/etc/pam.d/rundeck
+
+- name: User passwords
+  template: src=templates/passwd.j2 dest=/etc/rundeck_passwd
+
+- name: db_load rundeck
+  command: db_load -T -t hash -f /etc/rundeck_passwd /etc/rundeck_passwd.db
+
+- name: Create users
+  user:
+    name: "{{ item.user }}"
+    createhome: no
+  with_items:
+    - "{{ rundeck_users }}"
+  when: create_linux_users is defined and create_linux_users == true
+
+- name: Copy plugins
+  shell: cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/ && chown -R rundeck:rundeck /var/lib/rundeck/libext
