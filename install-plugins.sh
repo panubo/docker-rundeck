@@ -4,13 +4,13 @@ set -e
 
 # Plugin Configuration
 
-ANSIBLE_PLUGIN_VERSION=3.0.1
-ANSIBLE_PLUGIN_CHECKSUM=d05b98f9ff58acc40efe178a6f19ca3a9297b27d9a5022f8b0859162cc9a9692
+ANSIBLE_PLUGIN_VERSION=3.1.1
+ANSIBLE_PLUGIN_CHECKSUM=65b230037c954360dca99b1c8cee73a8fa8592aab9f708447e0e2272791b0674
 ANSIBLE_PLUGIN_SOURCE="https://github.com/Batix/rundeck-ansible-plugin/releases/download/${ANSIBLE_PLUGIN_VERSION}/ansible-plugin-${ANSIBLE_PLUGIN_VERSION}.jar"
 ANSIBLE_PLUGIN_NAME="ansible-plugin-${ANSIBLE_PLUGIN_VERSION}.jar"
 
-EC2NODES_PLUGIN_VERSION=1.5.12
-EC2NODES_PLUGIN_CHECKSUM=0cd8bc577314b21a2ac6e08e0a4acd37e8dfcf95a659a007049e818188acf044
+EC2NODES_PLUGIN_VERSION=1.5.14
+EC2NODES_PLUGIN_CHECKSUM=c7de8708221300e1dbf4518586907b3d61d6ccb955411976c432b0ad4ee9879c
 EC2NODES_PLUGIN_SOURCE="https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/releases/download/v${EC2NODES_PLUGIN_VERSION}/rundeck-ec2-nodes-plugin-${EC2NODES_PLUGIN_VERSION}.jar"
 EC2NODES_PLUGIN_NAME="rundeck-ec2-nodes-plugin-${EC2NODES_PLUGIN_VERSION}.jar"
 
@@ -31,7 +31,7 @@ for PLUGIN in ANSIBLE EC2NODES SLACKWEBHOOK; do
 
   ( set -ex; wget --no-verbose -O /tmp/${NAME} -L ${SOURCE}; )
   echo "${CHECKSUM}  ${NAME}" > /tmp/SHA256SUM
-  ( cd /tmp; sha256sum -c SHA256SUM; )
+  ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum /tmp/${NAME})"; exit 1; ))
   mv /tmp/${NAME} /opt/rundeck-plugins/
   rm -f /tmp/SHA256SUM
 

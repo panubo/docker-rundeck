@@ -23,15 +23,15 @@ RUN set -x \
   ;
 
 # Install AWS CLI
-ENV AWS_CLI_VERSION=1.19.16
-ENV AWS_CLI_CHECKSUM=5b1af214aa8cc1afe6badd056d3c16d411872d4ab1e5a9da515c3cecbd491de4
+ENV AWS_CLI_VERSION=1.19.111
+ENV AWS_CLI_CHECKSUM=b23bbd35962acf920624ceffc4fd4d0fe9612fb274bdf296a115f92b959184ca
 RUN set -x \
   && apt-get update \
   && apt-get -y install python unzip \
   && cd /tmp \
   && wget -nv https://s3.amazonaws.com/aws-cli/awscli-bundle-${AWS_CLI_VERSION}.zip -O /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
   && echo "${AWS_CLI_CHECKSUM}  awscli-bundle-${AWS_CLI_VERSION}.zip" > /tmp/SHA256SUM \
-  && sha256sum -c SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum awscli-bundle-${AWS_CLI_VERSION}.zip)"; exit 1; )) \
   && unzip awscli-bundle-${AWS_CLI_VERSION}.zip \
   && /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
   && apt-get -y remove unzip \
@@ -51,14 +51,15 @@ RUN set -x \
   ;
 
 # Install Dumb-init
-ENV DUMB_INIT_VERSION=1.2.2
-ENV DUMB_INIT_CHECKSUM=37f2c1f0372a45554f1b89924fbb134fc24c3756efaedf11e07f599494e0eff9
+ENV DUMB_INIT_VERSION=1.2.5
+ENV DUMB_INIT_CHECKSUM=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df
 RUN set -x \
-  && wget --no-verbose -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_amd64 \
-  && echo "${DUMB_INIT_CHECKSUM}  dumb-init" > /usr/local/bin/SHA256SUM \
-  && ( cd /usr/local/bin; sha256sum -c SHA256SUM; ) \
+  && wget --no-verbose https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 -O /tmp/dumb-init \
+  && echo "${DUMB_INIT_CHECKSUM}  dumb-init" > /tmp/SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum dumb-init)"; exit 1; )) \
+  && mv /tmp/dumb-init /usr/local/bin/ \
   && chmod +x /usr/local/bin/dumb-init \
-  && rm -f /usr/local/bin/SHA256SUM \
+  && rm -f /tmp/SHA256SUM \
   ;
 
 # Install Rundeck
@@ -96,7 +97,11 @@ RUN set -x \
 
 # Install apprise github.com/caronc/apprise
 RUN set -x \
-  && pip install apprise==0.8.6 \
+  && apt-get update \
+  && apt-get install -y python-pip \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip install apprise==0.9.3 \
   ;
 
 # Download plugins
