@@ -14,6 +14,9 @@
 - name: Create /var/lib/rundeck/i18n directory
   file:
     state: directory
+    owner: rundeck
+    group: rundeck
+    mode: "0750"
     path: /var/lib/rundeck/i18n
 
 - name: Write config file(s)
@@ -53,13 +56,14 @@
 - name: db_load rundeck
   command: db_load -T -t hash -f /etc/rundeck_passwd /etc/rundeck_passwd.db
 
+# https://github.com/rundeck/rundeck/issues/3226
 - name: Create users
   user:
     name: "{{ item.user }}"
     createhome: no
   with_items:
     - "{{ rundeck_users }}"
-  when: create_linux_users is defined and create_linux_users == true
+  # when: create_linux_users is defined and create_linux_users == true
 
 - name: Copy plugins
   shell: cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/ && chown -R rundeck:rundeck /var/lib/rundeck/libext
