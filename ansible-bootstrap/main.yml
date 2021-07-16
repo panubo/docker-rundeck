@@ -7,3 +7,5 @@
     - include_tasks: configure.yml
     - include_tasks: permissions.yml
     - include_tasks: ssh.yml
+    - include_tasks: tokens.yml
+      when: rundeck_tokens is defined

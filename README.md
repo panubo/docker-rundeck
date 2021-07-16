@@ -33,6 +33,11 @@ rundeck_users:
   - user: user3
     password: $6$Q8...$...
     roles: "user,admin"
+
+rundeck_tokens:
+  - user: apiadmin
+    token: somerandomstring
+    role: admin
 ```
 
 The global config (`/etc/rundeck`) directory is intended to be managed by the config options above and not editable at runtime.

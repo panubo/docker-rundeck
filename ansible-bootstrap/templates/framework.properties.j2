@@ -44,3 +44,6 @@ rundeck.server.uuid = {{ rundeck_uuid }}
 # Extra config
 # ----------------------------------------------------------------
 rundeck.jetty.connector.forwarded=true
+{% if rundeck_tokens is defined %}
+rundeck.tokens.file=/etc/rundeck/tokens.properties
+{% endif %}

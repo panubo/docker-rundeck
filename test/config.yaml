@@ -23,3 +23,9 @@ rundeck_users:
   - user: user2
     password: $6$znBViWuwu.wg8wVW$Mtocl/ihYgbl0ejyoEQbVJXlSCgISqmdfcb7Wa230V5kboJj1.cFav9d0b.F29k5IcyzIn5VqErrRcScNrezX/
     roles: "user"
+
+# Bearer token authentication
+rundeck_tokens:
+  - user: apiadmin
+    token: testtoken
+    roles: admin

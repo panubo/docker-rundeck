@@ -1,0 +1,3 @@
+{% for token in rundeck_tokens %}
+{{ token.user }}: {{ token.token }}, {{ token.roles }}
+{% endfor %}

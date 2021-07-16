@@ -142,5 +142,6 @@ VOLUME ["/var/lib/rundeck/data", "/var/lib/rundeck/logs", "/var/rundeck", "/var/
 COPY run.sh /run.sh
 COPY ansible-bootstrap/ /ansible-bootstrap/
 
+ENV RD_URL http://localhost:4440
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["/run.sh"]

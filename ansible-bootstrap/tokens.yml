@@ -1,0 +1,9 @@
+---
+
+- name: Write authentication tokens file
+  template:
+    dest: "/etc/rundeck/tokens.properties"
+    src: "templates/tokens.properties.j2"
+    mode: "0600"
+    owner: rundeck
+    group: rundeck
