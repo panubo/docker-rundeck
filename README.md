@@ -88,37 +88,47 @@ The following tools are pre-installed in the image
 The directory structure looks like:
 
 ```
-/opt
+/opt/
 ├── bin
 │   ├── lego
 │   └── sops
-├── helm-2.14
-│   └── bin
-│       └── helm
-├── helm-2.9
-│   └── bin
-│       └── helm
 ├── helm-3.2
+│   └── bin
+│       └── helm
+├── helm-3.3
 │   └── bin
 │       └── helm
 ├── helm-3.4
 │   └── bin
 │       └── helm
-├── kubectl-1.11
+├── helm-3.5
+│   └── bin
+│       └── helm
+├── helm-3.6
+│   └── bin
+│       └── helm
+├── kubectl-1.16
 │   └── bin
 │       └── kubectl
-├── kubectl-1.12
+├── kubectl-1.17
 │   └── bin
 │       └── kubectl
-├── kubectl-1.13
+├── kubectl-1.18
 │   └── bin
 │       └── kubectl
-├── kubectl-1.14
+├── kubectl-1.19
 │   └── bin
 │       └── kubectl
-└── kubectl-1.15
-    └── bin
-        └── kubectl
+├── kubectl-1.20
+│   └── bin
+│       └── kubectl
+├── kubectl-1.21
+│   └── bin
+│       └── kubectl
+└── rundeck-plugins
+    ├── ansible-plugin-3.1.1.jar
+    ├── rundeck-ec2-nodes-plugin-1.5.14.jar
+    └── rundeck-slack-incoming-webhook-plugin-0.11.jar
 ```
 
 ## Status
