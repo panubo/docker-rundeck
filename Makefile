@@ -2,7 +2,7 @@ TAG        := latest
 IMAGE_NAME := panubo/rundeck
 REGISTRY   := docker.io
 
-DOCKER_VOLUMES := -v $(shell pwd)/test/config.yaml:/config/config.yaml \
+DOCKER_VOLUMES := -v $(shell pwd)/test/config/:/config \
 	-v $(shell pwd)/test/lib/data:/var/lib/rundeck/data \
 	-v $(shell pwd)/test/lib/logs:/var/lib/rundeck/var \
 	-v $(shell pwd)/test/lib/logs:/var/lib/rundeck/logs \

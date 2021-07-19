@@ -1,0 +1,13 @@
+---
+
+- name: Create password for configure.sh api user
+  set_fact:
+    rundeck_token_configuresh: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') }}"
+
+- name: Write configure.sh
+  template:
+    dest: "/configure.sh"
+    src: "templates/configure.sh.j2"
+    mode: "0700"
+    owner: root
+    group: root

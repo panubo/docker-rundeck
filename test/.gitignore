@@ -1,3 +1,5 @@
+config/acls
+config/projects
 home
 lib
 log

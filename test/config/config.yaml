@@ -1,9 +1,7 @@
 ---
 
 rundeck_uuid: "{{ inventory_hostname | to_uuid }}"
-
-rundeck_server_url: http://localhost:4440
-
+rundeck_server_url: "{{ lookup('env', 'RD_URL') }}"
 rundeck_api_auth_max_duration: "30d"
 
 # Password is the same as the username

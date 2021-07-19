@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+#
+# Configure Rundeck using a configuration-follows-convention approach.
+# This script is idempotent.
+#
+# Path structure:
+# /projects/<project_name>/<job_name>.yaml
+# /projects/<project_name>/<acl_policy_name>.aclpolicy
+#
+# Using:
+# - https://rundeck.github.io/rundeck-cli/commands/
+
+set -e
+
+export RD_TOKEN="{{ rundeck_token_configuresh }}"
+CONFIG_DIR="${CONFIG_DIR:-/config}"
+
+# wait_http URL [TIMEOUT] [HTTP TIMEOUT]
+wait_http() {
+  # Wait for http service to be available
+  command -v curl >/dev/null 2>&1 || { error "This function requires curl to be installed."; return 1; }
+  local url="${1:-'http://localhost'}"
+  local timeout="${2:-30}"
+  local http_timeout="${3:-2}"
+  echo -n "Connecting to HTTP at ${url}"
+  for (( i=0;; i++ )); do
+    if [[ "${i}" -eq "${timeout}" ]]; then
+      echo " timeout!"
+      return 99
+    fi
+    sleep 1
+    (curl --max-time "${http_timeout}" "${url}") &>/dev/null && break
+    echo -n "."
+  done
+  echo " connected."
+  exec 3>&-
+  exec 3<&-
+}
+
+wait_http ${RD_URL}
+
+get_installed_projects() {
+  # remove last blank line
+  echo "$(rd projects list --outformat "%name")"
+}
+
+# get_installed_jobs() {
+#   # remove last blank line
+#   echo "$(rd jobs list --project "${1}" --outformat "%name")"
+# }
+
+create_project() {
+  echo "> Creating project ${1}"
+  rd projects create --project "${1}"
+}
+
+load_job() {
+  echo "> Loading job ${2} in project ${1}"
+  rd jobs load --project "${1}" --format yaml --file "${2}"
+}
+
+load_acl() {
+  # need to create and delete, as this command isn't idempotent, also outputs whole policy which is undesirable
+  echo "> Recreating ACL ${2} in project ${1}"
+  rd projects acls delete --project "${1}" --name "$(basename "${2}")" || true
+  rd projects acls create --project "${1}" --name "$(basename "${2}")" --file "${2}" 1> /dev/null && echo "# Created ACL Policy for ${1}: $(basename "${2}")"
+}
+
+contains() {
+    [[ $1 =~ (^|[[:space:]])$2($|[[:space:]]) ]] && return 0 || return 1
+}
+
+echo ">> Running $(basename "$0")"
+
+if [ -d "${CONFIG_DIR}/projects" ]; then
+  INSTALLED_PROJECTS="$(get_installed_projects)"
+  # Create Projects
+  for PROJECT in $(find "${CONFIG_DIR}/projects" -maxdepth 1 -mindepth 1 -type d); do
+      PROJECT=$(basename "${PROJECT}")
+      contains "${INSTALLED_PROJECTS}" "${PROJECT}" && { echo "Project exists $PROJECT"; } || { create_project "${PROJECT}"; }
+      # Create project Jobs (always replace)
+      for JOB in $(find "${CONFIG_DIR}/projects/${PROJECT}" -maxdepth 1 -mindepth 1 -type f -name '*.yaml'); do
+          load_job "${PROJECT}" "${JOB}"
+      done
+      # Create project ACLS (always replace)
+      for ACL in $(find "${CONFIG_DIR}/projects/${PROJECT}" -maxdepth 1 -mindepth 1 -type f -name '*.aclpolicy'); do
+          load_acl "${PROJECT}" "${ACL}"
+      done
+  done
+fi
+
+echo ">> Finished $(basename "$0")"

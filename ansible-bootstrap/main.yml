@@ -3,9 +3,12 @@
 - hosts: all
   gather_facts: false
 
+  vars:
+    - rundeck_tokens: []
+
   tasks:
+    - include_tasks: configure_script.yml
     - include_tasks: configure.yml
     - include_tasks: permissions.yml
     - include_tasks: ssh.yml
     - include_tasks: tokens.yml
-      when: rundeck_tokens is defined

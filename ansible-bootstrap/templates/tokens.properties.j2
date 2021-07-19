@@ -1,3 +1,6 @@
 {% for token in rundeck_tokens %}
 {{ token.user }}: {{ token.token }}, {{ token.roles }}
 {% endfor %}
+{% if rundeck_token_configuresh is defined %}
+configuresh: {{ rundeck_token_configuresh }}, admin
+{% endif %}
