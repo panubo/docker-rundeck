@@ -73,7 +73,6 @@ The following plugins are installed (excluding the base plugins):
 
 * [Ansible](https://github.com/Batix/rundeck-ansible-plugin/)
 * [EC2 Nodes](https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/)
-* [Kubernetes](https://github.com/rundeck-plugins/kubernetes/)
 * [Slack Incoming Webhook](https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/)
 
 ## Tools
