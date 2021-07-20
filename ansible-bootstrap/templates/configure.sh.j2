@@ -37,7 +37,7 @@ wait_http() {
   exec 3<&-
 }
 
-wait_http ${RD_URL}
+wait_http "${RD_URL}" 300
 
 get_installed_projects() {
   # remove last blank line
