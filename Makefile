@@ -12,7 +12,7 @@ DOCKER_VOLUMES := -v $(shell pwd)/test/config/:/config \
 
 .PHONY: *
 build:
-	docker build --pull -t ${IMAGE_NAME}:${TAG} .
+	docker build --pull --cache-from ${REGISTRY}/${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${TAG} .
 
 bash:
 	docker run --rm -it --name rundeck -p 4440:4440 $(DOCKER_VOLUMES) --entrypoint /bin/bash ${IMAGE_NAME}:${TAG}
