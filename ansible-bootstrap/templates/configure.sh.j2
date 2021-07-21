@@ -54,16 +54,22 @@ create_project() {
   rd projects create --project "${1}"
 }
 
-load_job() {
+load_project_job() {
   echo "> Loading job ${2} in project ${1}"
   rd jobs load --project "${1}" --format yaml --file "${2}"
 }
 
-load_acl() {
+load_project_acl() {
   # need to create and delete, as this command isn't idempotent, also outputs whole policy which is undesirable
   echo "> Recreating ACL ${2} in project ${1}"
   rd projects acls delete --project "${1}" --name "$(basename "${2}")" || true
   rd projects acls create --project "${1}" --name "$(basename "${2}")" --file "${2}" 1> /dev/null && echo "# Created ACL Policy for ${1}: $(basename "${2}")"
+}
+
+load_application_acl() {
+  # copy acl policies to where they can be accessed by rundeck
+  echo "> Loading ACL $(basename "${1}")"
+  install -o root -g rundeck --mode=0640 "${1}" /etc/rundeck/$(basename "${1}")
 }
 
 contains() {
@@ -80,12 +86,19 @@ if [ -d "${CONFIG_DIR}/projects" ]; then
       contains "${INSTALLED_PROJECTS}" "${PROJECT}" && { echo "Project exists $PROJECT"; } || { create_project "${PROJECT}"; }
       # Create project Jobs (always replace)
       for JOB in $(find "${CONFIG_DIR}/projects/${PROJECT}" -maxdepth 1 -mindepth 1 -type f -name '*.yaml'); do
-          load_job "${PROJECT}" "${JOB}"
+          load_project_job "${PROJECT}" "${JOB}"
       done
       # Create project ACLS (always replace)
       for ACL in $(find "${CONFIG_DIR}/projects/${PROJECT}" -maxdepth 1 -mindepth 1 -type f -name '*.aclpolicy'); do
-          load_acl "${PROJECT}" "${ACL}"
+          load_project_acl "${PROJECT}" "${ACL}"
       done
+  done
+fi
+
+if [ -d "${CONFIG_DIR}/acls" ]; then
+  # Create application ALCS (always replace)
+  for ACL in $(find "${CONFIG_DIR}/acls" -maxdepth 1 -mindepth 1 -type f -name '*.aclpolicy'); do
+      load_application_acl "${ACL}"
   done
 fi
 
