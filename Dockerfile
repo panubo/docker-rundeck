@@ -63,8 +63,8 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=3.4.0.20210614-1_all
-ENV RUNDECK_CHECKSUM=a0989a78850e38a7557d6603bd254495506d086b3e75f8356f3354a27a5fa1d8
+ENV RUNDECK_VERSION=3.4.2.20210803-1_all
+ENV RUNDECK_CHECKSUM=9828978b862d7e617dba29dd5da6485ae45d20692002c367d5d2e67783609e67
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
