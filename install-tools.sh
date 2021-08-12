@@ -98,6 +98,27 @@ install_kubectl() {
   mv kubectl "/opt/kubectl-${major_minor}/bin/kubectl"
 }
 
+install_argo() {
+  local version checksum checksum_var version_parts major_minor
+  version="${1}"
+  checksum_var="ARGO_${version//\./_}_CHECKSUM"
+  checksum="${!checksum_var}"
+
+  IFS='.' read -r -a version_parts <<<"${version}"
+  major_minor="${version_parts[0]}.${version_parts[1]}"
+
+  echo "https://github.com/argoproj/argo-workflows/releases/download/v${version}/argo-linux-amd64.gz"
+  echo "${checksum}"
+
+  wget -nv "https://github.com/argoproj/argo-workflows/releases/download/v${version}/argo-linux-amd64.gz"
+  echo "${checksum}  argo-linux-amd64.gz" > SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum argo-linux-amd64.gz)"; exit 1; )
+
+  gunzip argo-linux-amd64.gz
+  mkdir -p "/opt/argo-${major_minor}/bin"
+  install -o root -g root -m 755 argo-linux-amd64 "/opt/argo-${major_minor}/bin/argo"
+}
+
 # Versions
 
 KUBECTL_1_21_2_CHECKSUM=55b982527d76934c2f119e70bf0d69831d3af4985f72bb87cd4924b1c7d528da
@@ -119,6 +140,7 @@ SOPS_3_6_1_CHECKSUM=b2252aa00836c72534471e1099fa22fab2133329b62d7826b5ac49511fcc
 
 LEGO_4_1_3_CHECKSUM=67007a3a35a488ef6895421954decc6a5bf79b8acd0a66b94df90d88089fd2c5
 
+ARGO_3_1_5_CHECKSUM=68ebb30e79aa5ab649dbd0feb6e227b0dcff2b2983c00e176cc523a9f883567b
 
 install_sops 3.6.1
 
@@ -136,5 +158,7 @@ install_kubectl 1.18.20
 install_kubectl 1.19.12
 install_kubectl 1.20.8
 install_kubectl 1.21.2
+
+install_argo 3.1.5
 
 echo "Finished installing tools..."
