@@ -8,7 +8,7 @@ The configuration is fairly opinionated, and is probably not suitable as a gener
 
 ## Config
 
-Mount the yaml config file into the container at `/config/config.yaml` (Could be done via a Docker volume mount or Kubernetes configmap)
+Mount the yaml config file into the container at `/config/config.yaml`. This could be done via a Docker volume mount or Kubernetes configmap.
 
 Example:
 
@@ -87,7 +87,7 @@ The following tools are pre-installed in the image
 * [helm](https://helm.sh/) **VERSIONED**
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) **VERSIONED**
 
-**VERSIONED** tools are not in the PATH by default, script need to call the version they want directly. Versions of these tools are shortened to MAJOR.MINOR so any PATCH releases can be upgraded in-place.
+**VERSIONED** tools are not in the PATH by default. Scripts need to call the version required directly. Versions of these tools are shortened to MAJOR.MINOR so any PATCH releases can be upgraded in-place.
 
 The directory structure looks like:
 
@@ -111,9 +111,6 @@ The directory structure looks like:
 ├── helm-3.6
 │   └── bin
 │       └── helm
-├── kubectl-1.16
-│   └── bin
-│       └── kubectl
 ├── kubectl-1.17
 │   └── bin
 │       └── kubectl
@@ -127,6 +124,9 @@ The directory structure looks like:
 │   └── bin
 │       └── kubectl
 ├── kubectl-1.21
+│   └── bin
+│       └── kubectl
+├── kubectl-1.22
 │   └── bin
 │       └── kubectl
 └── rundeck-plugins
