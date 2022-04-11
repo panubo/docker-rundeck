@@ -4,11 +4,11 @@ Docker image with [Rundeck](http://rundeck.org/) and [Ansible](https://www.ansib
 
 This image configures Rundeck to use PAM authentication so we can use secure password hashes (SHA512 CRYPT) that aren't supported by JAAS (OBF, MD5 and CRYPT).
 
-The configuration is fairly opinionated, and is probably not suitable as a general purpose image. H2 database (embedded) is used to reduce external dependencies.
+The configuration is fairly opinionated, and is probably not suitable as a general purpose image. The embedded H2 database is used to reduce external dependencies.
 
 ## Config
 
-Mount the yaml config file into the container at `/config/config.yaml`. This could be done via a Docker volume mount or Kubernetes configmap.
+Mount the yaml config file into the container at `/config/config.yaml`. This could be done via a Docker volume mount or Kubernetes ConfigMap.
 
 Example:
 
@@ -111,9 +111,6 @@ The directory structure looks like:
 ├── helm-3.6
 │   └── bin
 │       └── helm
-├── kubectl-1.17
-│   └── bin
-│       └── kubectl
 ├── kubectl-1.18
 │   └── bin
 │       └── kubectl
@@ -127,6 +124,9 @@ The directory structure looks like:
 │   └── bin
 │       └── kubectl
 ├── kubectl-1.22
+│   └── bin
+│       └── kubectl
+├── kubectl-1.23
 │   └── bin
 │       └── kubectl
 └── rundeck-plugins
