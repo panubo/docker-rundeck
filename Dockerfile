@@ -1,8 +1,7 @@
-FROM docker.io/debian:buster
+FROM docker.io/debian:bullseye
 
 # Set encoding
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 # Install base packages
 RUN set -x \
@@ -12,22 +11,20 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install JDK8 (required)
+# Install JDK11
 RUN set -x \
-  && echo "deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb buster main" | tee -a /etc/apt/sources.list.d/adoptopenjdk.list \
-  && curl https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - \
   && apt-get update \
-  && apt-get -y install adoptopenjdk-8-hotspot \
+  && apt-get -y install openjdk-11-jre-headless \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
 # Install AWS CLI
-ENV AWS_CLI_VERSION=1.19.111
-ENV AWS_CLI_CHECKSUM=b23bbd35962acf920624ceffc4fd4d0fe9612fb274bdf296a115f92b959184ca
+ENV AWS_CLI_VERSION=1.22.85 AWS_CLI_CHECKSUM=f6f8f3635daa82049d02b828169e43c9db09a9fc791fdf4582d62c74060baf32
 RUN set -x \
   && apt-get update \
-  && apt-get -y install python unzip \
+  && apt-get -y install python3 python3-venv unzip \
+  && ln -s /usr/bin/python3 /usr/bin/python \
   && cd /tmp \
   && wget -nv https://s3.amazonaws.com/aws-cli/awscli-bundle-${AWS_CLI_VERSION}.zip -O /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
   && echo "${AWS_CLI_CHECKSUM}  awscli-bundle-${AWS_CLI_VERSION}.zip" > /tmp/SHA256SUM \
@@ -51,8 +48,7 @@ RUN set -x \
   ;
 
 # Install Dumb-init
-ENV DUMB_INIT_VERSION=1.2.5
-ENV DUMB_INIT_CHECKSUM=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df
+ENV DUMB_INIT_VERSION=1.2.5 DUMB_INIT_CHECKSUM=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df
 RUN set -x \
   && wget --no-verbose https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 -O /tmp/dumb-init \
   && echo "${DUMB_INIT_CHECKSUM}  dumb-init" > /tmp/SHA256SUM \
@@ -63,8 +59,7 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=3.4.8.20211214-1_all
-ENV RUNDECK_CHECKSUM=62150933fe82485e986dd02f10bf77027ed5fb373a80324b7d37a8fcad0f5427
+ENV RUNDECK_VERSION=4.0.1.20220404-1_all RUNDECK_CHECKSUM=89df16e165ea826b8e99e0b9216d9247636fba9f9c199f393f56b74d58b06d7c
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
@@ -76,8 +71,7 @@ RUN set -x \
   ;
 
 # Install Rundeck CLI
-ENV RUNDECK_CLI_VERSION=1.3.10-1_all
-ENV RUNDECK_CLI_CHECKSUM=e9f6fb2cd051b32b452a055ce5aa7e354b21e011a9c00c76e3d624c2338a3736
+ENV RUNDECK_CLI_VERSION=1.3.11-1_all RUNDECK_CLI_CHECKSUM=ad0623ba26aeaf98c27147766f1d1c167b64cd748e88f14c7a06312be784ee8f
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_${RUNDECK_CLI_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CLI_CHECKSUM}  rundeck_${RUNDECK_CLI_VERSION}.deb" > /tmp/SHA256SUM \
@@ -98,8 +92,8 @@ RUN set -x \
 
 # Install skopeo
 RUN set -x \
-  && echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
-  && wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_10/Release.key -O- | apt-key add - \
+  && echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
+  && wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_11/Release.key -O- | apt-key add - \
   && apt-get update \
   && apt-get install --no-install-recommends --no-install-suggests -y skopeo \
   && apt-get clean \
@@ -109,10 +103,10 @@ RUN set -x \
 # Install apprise github.com/caronc/apprise
 RUN set -x \
   && apt-get update \
-  && apt-get install -y python-pip \
+  && apt-get install -y python3-pip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && pip install apprise==0.9.3 \
+  && pip install apprise==0.9.7 \
   ;
 
 # Download plugins
