@@ -6,6 +6,20 @@ This image configures Rundeck to use PAM authentication so we can use secure pas
 
 The configuration is fairly opinionated, and is probably not suitable as a general purpose image. The embedded H2 database is used to reduce external dependencies.
 
+## Upgrading
+
+Generally nothing needs to be done when upgrading versions.
+However when upgrading to 4.x versions from 3.x or earlier, the following must be run against the data mount before starting the new container:
+
+### 4.x upgrade
+
+The following must be run to ensure that all the rundeck files are owned by the correct uid/gid.
+
+```
+find . -uid 102 -exec chown --no-dereference 103 {} \;
+find . -gid 103 -exec chgrp --no-dereference 104 {} \;
+```
+
 ## Config
 
 Mount the yaml config file into the container at `/config/config.yaml`. This could be done via a Docker volume mount or Kubernetes ConfigMap.
