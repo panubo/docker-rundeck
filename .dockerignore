@@ -1,4 +1,5 @@
 .git
 .dockerignore
 Makefile
+README.md
 test/
