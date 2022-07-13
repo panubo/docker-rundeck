@@ -13,7 +13,7 @@ However when upgrading to 4.x versions from 3.x or earlier, the following must b
 
 ### 4.x upgrade
 
-The following must be run to ensure that all the rundeck files are owned by the correct uid/gid.
+The following must be run to ensure that all the Rundeck files are owned by the correct uid/gid.
 
 ```
 find . -uid 102 -exec chown --no-dereference 103 {} \;
@@ -107,6 +107,9 @@ The directory structure looks like:
 
 ```
 /opt/
+├── argo-3.1
+│   └── bin
+│       └── argo
 ├── bin
 │   ├── lego
 │   └── sops
@@ -123,6 +126,15 @@ The directory structure looks like:
 │   └── bin
 │       └── helm
 ├── helm-3.6
+│   └── bin
+│       └── helm
+├── helm-3.7
+│   └── bin
+│       └── helm
+├── helm-3.8
+│   └── bin
+│       └── helm
+├── helm-3.9
 │   └── bin
 │       └── helm
 ├── kubectl-1.18
@@ -144,8 +156,8 @@ The directory structure looks like:
 │   └── bin
 │       └── kubectl
 └── rundeck-plugins
-    ├── ansible-plugin-3.1.1.jar
-    ├── rundeck-ec2-nodes-plugin-1.5.14.jar
+    ├── ansible-plugin-3.2.0.jar
+    ├── rundeck-ec2-nodes-plugin-1.6.0.jar
     └── rundeck-slack-incoming-webhook-plugin-0.11.jar
 ```
 
