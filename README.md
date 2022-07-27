@@ -58,11 +58,12 @@ The global config (`/etc/rundeck`) directory is intended to be managed by the co
 
 The following volumes should be mounted externally to persist data and configuration between container restarts:
 
-* /var/lib/rundeck/data - Rundeck database (unless using an external database, not yet implemented in this image)
-* /var/lib/rundeck/logs - Job logs
-* /home/rundeck - Localhost working/home directory
-* /var/rundeck - Rundeck projects
-* /var/log/rundeck - Rundeck system logs
+* `/config` - Rundeck Job and ACL configurations to load
+* `/var/lib/rundeck/data` - Rundeck database (unless using an external database, not yet implemented in this image)
+* `/var/lib/rundeck/logs` - Job logs
+* `/home/rundeck` - Localhost working/home directory
+* `/var/rundeck` - Rundeck projects
+* `/var/log/rundeck` - Rundeck system logs
 
 ## Usage
 
@@ -94,6 +95,7 @@ The following plugins are installed (excluding the base plugins):
 The following tools are pre-installed in the image
 
 * [Ansible](https://www.ansible.com/)
+* [Argo Workflows CLI](https://github.com/argoproj/argo-workflows/) **VERSIONED**
 * [awscli](https://aws.amazon.com/cli/)
 * [gcloud cli](https://cloud.google.com/sdk/)
 * [mozilla/sops](https://github.com/mozilla/sops)
