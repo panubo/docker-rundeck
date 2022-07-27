@@ -11,3 +11,11 @@
     mode: "0700"
     owner: root
     group: root
+
+- name: Write export_jobs.sh
+  template:
+    dest: "/export_jobs.sh"
+    src: "templates/export_jobs.sh.j2"
+    mode: "0700"
+    owner: root
+    group: root
