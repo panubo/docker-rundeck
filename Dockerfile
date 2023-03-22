@@ -13,6 +13,8 @@ RUN set -x \
 
 # Install JDK11
 RUN set -x \
+  && export DEBIAN_FRONTEND=noninteractive \
+  && mkdir /etc/ssl/certs/java/ \
   && apt-get update \
   && apt-get -y install openjdk-11-jre-headless \
   && apt-get clean \
@@ -42,7 +44,7 @@ RUN set -x \
   && echo "deb https://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
   && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
   && apt-get update \
-  && apt-get install -y google-cloud-sdk \
+  && apt-get install -y google-cloud-sdk google-cloud-sdk-gke-gcloud-auth-plugin \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
