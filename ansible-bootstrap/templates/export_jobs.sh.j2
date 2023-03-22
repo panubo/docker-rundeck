@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+#
+# Export all currently loaded Rundeck jobs
+#
+# Path structure:
+# /projects/<project_name>/<job_name>.yaml
+#
+# Using:
+# - https://rundeck.github.io/rundeck-cli/commands/
+
+set -e
+
+export RD_TOKEN="{{ rundeck_token_configuresh }}"
+CONFIG_DIR="${CONFIG_DIR:-/config}"
+
+# wait_http URL [TIMEOUT] [HTTP TIMEOUT]
+wait_http() {
+  # Wait for http service to be available
+  command -v curl >/dev/null 2>&1 || { error "This function requires curl to be installed."; return 1; }
+  local url="${1:-'http://localhost'}"
+  local timeout="${2:-30}"
+  local http_timeout="${3:-2}"
+  echo -n "Connecting to HTTP at ${url}"
+  for (( i=0;; i++ )); do
+    if [[ "${i}" -eq "${timeout}" ]]; then
+      echo " timeout!"
+      return 99
+    fi
+    sleep 1
+    (curl --max-time "${http_timeout}" "${url}") &>/dev/null && break
+    echo -n "."
+  done
+  echo " connected."
+  exec 3>&-
+  exec 3<&-
+}
+
+wait_http "${RD_URL}" 300
+
+get_installed_projects() {
+  # remove last blank line
+  echo "$(rd projects list --outformat "%name")"
+}
+
+get_installed_jobs() {
+  # remove last blank line
+  echo "$(rd jobs list -p ${1} --format yaml --outformat "%name")"
+}
+
+write_job() {
+  # write out the job to the config dir
+  rd jobs list -p ${1} --format yaml -J ${2} -f ${CONFIG_DIR}/projects/${1}/${2}.yaml
+}
+
+echo ">> Running $(basename "$0")"
+
+if [ -d "${CONFIG_DIR}/projects" ]; then
+
+  for PROJECT in $(get_installed_projects); do
+  	echo "> $PROJECT"
+  	for JOB in $(get_installed_jobs "${PROJECT}"); do
+  		echo ">> $JOB"
+  		write_job ${PROJECT} ${JOB}
+  	done
+  done
+
+fi
+
+echo ">> Finished $(basename "$0")"
