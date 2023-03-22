@@ -108,23 +108,20 @@ The following tools are pre-installed in the image
 The directory structure looks like:
 
 ```
-/opt/
+/opt
 ├── argo-3.1
+│   └── bin
+│       └── argo
+├── argo-3.4
 │   └── bin
 │       └── argo
 ├── bin
 │   ├── lego
 │   └── sops
-├── helm-3.2
+├── helm-3.10
 │   └── bin
 │       └── helm
-├── helm-3.3
-│   └── bin
-│       └── helm
-├── helm-3.4
-│   └── bin
-│       └── helm
-├── helm-3.5
+├── helm-3.11
 │   └── bin
 │       └── helm
 ├── helm-3.6
@@ -139,15 +136,6 @@ The directory structure looks like:
 ├── helm-3.9
 │   └── bin
 │       └── helm
-├── kubectl-1.18
-│   └── bin
-│       └── kubectl
-├── kubectl-1.19
-│   └── bin
-│       └── kubectl
-├── kubectl-1.20
-│   └── bin
-│       └── kubectl
 ├── kubectl-1.21
 │   └── bin
 │       └── kubectl
@@ -155,6 +143,15 @@ The directory structure looks like:
 │   └── bin
 │       └── kubectl
 ├── kubectl-1.23
+│   └── bin
+│       └── kubectl
+├── kubectl-1.24
+│   └── bin
+│       └── kubectl
+├── kubectl-1.25
+│   └── bin
+│       └── kubectl
+├── kubectl-1.26
 │   └── bin
 │       └── kubectl
 └── rundeck-plugins
