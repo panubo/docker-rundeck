@@ -22,7 +22,7 @@ RUN set -x \
   ;
 
 # Install AWS CLI
-ENV AWS_CLI_VERSION=1.22.85 AWS_CLI_CHECKSUM=f6f8f3635daa82049d02b828169e43c9db09a9fc791fdf4582d62c74060baf32
+ENV AWS_CLI_VERSION=1.27.96 AWS_CLI_CHECKSUM=c8085a4701a63d99f44fcc2e8eab78a5264ee0a2705f4e0193317428dd5ede55
 RUN set -x \
   && apt-get update \
   && apt-get -y install python3 python3-venv unzip \
@@ -108,7 +108,7 @@ RUN set -x \
   && apt-get install -y python3-pip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && pip install apprise==0.9.7 \
+  && pip install apprise==1.3.0 \
   ;
 
 # Download plugins

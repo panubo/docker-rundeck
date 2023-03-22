@@ -75,7 +75,7 @@ docker run --rm -it --name rundeck -p 4440:4440 \
   -v $(pwd)/test/lib:/var/lib/rundeck \
   -v $(pwd)/test/var:/var/rundeck \
   -v $(pwd)/test/log:/var/log/rundeck \
-  docker.io/panubo/rundeck:latest
+  quay.io/panubo/rundeck:latest
 ```
 
 The container bootstrap does not support SSL. It is intended that this image is run behind an SSL terminating proxy such as Nginx, HAProxy or a cloud load balancer service.
