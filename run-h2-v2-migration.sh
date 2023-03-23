@@ -5,6 +5,8 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+set -x
+
 git -C /var/lib/rundeck/data clone https://github.com/rundeck-plugins/h2-v2-migration.git
 
 mkdir /var/lib/rundeck/data/h2-v2-migration/backup
