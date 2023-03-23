@@ -33,6 +33,7 @@ RUN set -x \
   && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum awscli-bundle-${AWS_CLI_VERSION}.zip)"; exit 1; )) \
   && unzip awscli-bundle-${AWS_CLI_VERSION}.zip \
   && /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+  && rm -rf /tmp/awscli-bundle /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
   && apt-get -y remove unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
@@ -61,7 +62,7 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=4.0.1.20220404-1_all RUNDECK_CHECKSUM=89df16e165ea826b8e99e0b9216d9247636fba9f9c199f393f56b74d58b06d7c
+ENV RUNDECK_VERSION=4.1.0.20220420-1_all RUNDECK_CHECKSUM=88610e427d0fb959c2eeb47eca948f93fd09ff43db025d9c59a232d31d989df2
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
@@ -70,10 +71,12 @@ RUN set -x \
   && chown -R root:rundeck /etc/rundeck \
   && chmod -R 640 /etc/rundeck/* \
   && rm -f /tmp/rundeck_${RUNDECK_VERSION}.deb /tmp/SHA256SUM \
+  && mkdir /tmp/rundeck \
+  && chown rundeck:rundeck /tmp/rundeck \
   ;
 
 # Install Rundeck CLI
-ENV RUNDECK_CLI_VERSION=1.3.11-1_all RUNDECK_CLI_CHECKSUM=ad0623ba26aeaf98c27147766f1d1c167b64cd748e88f14c7a06312be784ee8f
+ENV RUNDECK_CLI_VERSION=2.0.4-1_all RUNDECK_CLI_CHECKSUM=987a4b36870a0b0fd6a04f595ba5b179103370e5da7106cd881a8e4caec9fa11
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_${RUNDECK_CLI_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CLI_CHECKSUM}  rundeck_${RUNDECK_CLI_VERSION}.deb" > /tmp/SHA256SUM \
