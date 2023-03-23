@@ -51,9 +51,16 @@ RUN set -x \
   ;
 
 # Install Dumb-init
-ENV DUMB_INIT_VERSION=1.2.5 DUMB_INIT_CHECKSUM=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df
+ENV DUMB_INIT_VERSION=1.2.5 \
+    DUMB_INIT_CHECKSUM_X86_64=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df \
+    DUMB_INIT_CHECKSUM_AARCH64=b7d648f97154a99c539b63c55979cd29f005f88430fb383007fe3458340b795e
 RUN set -x \
-  && wget --no-verbose https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 -O /tmp/dumb-init \
+  && if [ "$(uname -m)" = "x86_64" ] ; then \
+        DUMB_INIT_CHECKSUM="${DUMB_INIT_CHECKSUM_X86_64}"; \
+      elif [ "$(uname -m)" = "aarch64" ]; then \
+        DUMB_INIT_CHECKSUM="${DUMB_INIT_CHECKSUM_AARCH64}"; \
+      fi \
+  && wget --no-verbose https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_$(uname -m) -O /tmp/dumb-init \
   && echo "${DUMB_INIT_CHECKSUM}  dumb-init" > /tmp/SHA256SUM \
   && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum dumb-init)"; exit 1; )) \
   && mv /tmp/dumb-init /usr/local/bin/ \
