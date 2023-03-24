@@ -33,6 +33,7 @@ RUN set -x \
   && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum awscli-bundle-${AWS_CLI_VERSION}.zip)"; exit 1; )) \
   && unzip awscli-bundle-${AWS_CLI_VERSION}.zip \
   && /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+  && rm -rf /tmp/awscli-bundle /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
   && apt-get -y remove unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
@@ -50,9 +51,16 @@ RUN set -x \
   ;
 
 # Install Dumb-init
-ENV DUMB_INIT_VERSION=1.2.5 DUMB_INIT_CHECKSUM=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df
+ENV DUMB_INIT_VERSION=1.2.5 \
+    DUMB_INIT_CHECKSUM_X86_64=e874b55f3279ca41415d290c512a7ba9d08f98041b28ae7c2acb19a545f1c4df \
+    DUMB_INIT_CHECKSUM_AARCH64=b7d648f97154a99c539b63c55979cd29f005f88430fb383007fe3458340b795e
 RUN set -x \
-  && wget --no-verbose https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_x86_64 -O /tmp/dumb-init \
+  && if [ "$(uname -m)" = "x86_64" ] ; then \
+        DUMB_INIT_CHECKSUM="${DUMB_INIT_CHECKSUM_X86_64}"; \
+      elif [ "$(uname -m)" = "aarch64" ]; then \
+        DUMB_INIT_CHECKSUM="${DUMB_INIT_CHECKSUM_AARCH64}"; \
+      fi \
+  && wget --no-verbose https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_$(uname -m) -O /tmp/dumb-init \
   && echo "${DUMB_INIT_CHECKSUM}  dumb-init" > /tmp/SHA256SUM \
   && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum dumb-init)"; exit 1; )) \
   && mv /tmp/dumb-init /usr/local/bin/ \
@@ -61,7 +69,7 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=4.0.1.20220404-1_all RUNDECK_CHECKSUM=89df16e165ea826b8e99e0b9216d9247636fba9f9c199f393f56b74d58b06d7c
+ENV RUNDECK_VERSION=4.1.0.20220420-1_all RUNDECK_CHECKSUM=88610e427d0fb959c2eeb47eca948f93fd09ff43db025d9c59a232d31d989df2
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
@@ -70,10 +78,12 @@ RUN set -x \
   && chown -R root:rundeck /etc/rundeck \
   && chmod -R 640 /etc/rundeck/* \
   && rm -f /tmp/rundeck_${RUNDECK_VERSION}.deb /tmp/SHA256SUM \
+  && mkdir /tmp/rundeck \
+  && chown rundeck:rundeck /tmp/rundeck \
   ;
 
 # Install Rundeck CLI
-ENV RUNDECK_CLI_VERSION=1.3.11-1_all RUNDECK_CLI_CHECKSUM=ad0623ba26aeaf98c27147766f1d1c167b64cd748e88f14c7a06312be784ee8f
+ENV RUNDECK_CLI_VERSION=2.0.4-1_all RUNDECK_CLI_CHECKSUM=987a4b36870a0b0fd6a04f595ba5b179103370e5da7106cd881a8e4caec9fa11
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_${RUNDECK_CLI_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CLI_CHECKSUM}  rundeck_${RUNDECK_CLI_VERSION}.deb" > /tmp/SHA256SUM \
@@ -137,6 +147,7 @@ VOLUME ["/var/lib/rundeck/data", "/var/lib/rundeck/logs", "/var/rundeck", "/var/
 # Add config files
 COPY run.sh /run.sh
 COPY ansible-bootstrap/ /ansible-bootstrap/
+COPY run-h2-v2-migration.sh /run-h2-v2-migration.sh
 
 ENV RD_URL http://localhost:4440
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
