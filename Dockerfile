@@ -138,6 +138,7 @@ RUN set -x \
   && cp -a /etc/skel /home/rundeck \
   && usermod --home /home/rundeck rundeck \
   && chown -R rundeck:rundeck /home/rundeck \
+  && sed -i 's/HashKnownHosts.*/HashKnownHosts no/' /etc/ssh/ssh_config \
   ;
 
 WORKDIR /home/rundeck
