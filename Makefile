@@ -32,3 +32,6 @@ clean:
 
 tree: build
 	docker run --rm -it --name rundeck --entrypoint /bin/bash ${IMAGE_NAME}:${TAG} -c "apt-get update && apt-get -y install tree && tree /opt"
+
+_ci_test:
+	echo "NOOP"
