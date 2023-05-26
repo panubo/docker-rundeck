@@ -18,7 +18,7 @@ build-dev:
 	docker build --pull -t ${IMAGE_NAME}:${TAG} .
 
 bash:
-	docker run --rm -it --name rundeck -p 4440:4440 $(DOCKER_VOLUMES) --entrypoint /bin/bash ${IMAGE_NAME}:${TAG}
+	docker run --rm -it --name rundeck -p 4440:4440 $(DOCKER_VOLUMES) --entrypoint /bin/bash ${REGISTRY}/${IMAGE_NAME}:${TAG}
 
 run:
 	docker run --rm -it --name rundeck -p 4440:4440 $(DOCKER_VOLUMES) ${IMAGE_NAME}:${TAG}

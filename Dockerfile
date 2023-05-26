@@ -6,7 +6,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release gosu skopeo \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
@@ -102,16 +102,6 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install skopeo
-RUN set -x \
-  && echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list \
-  && wget -nv https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_11/Release.key -O- | apt-key add - \
-  && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y skopeo \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  ;
-
 # Install apprise github.com/caronc/apprise
 RUN set -x \
   && apt-get update \
@@ -131,6 +121,12 @@ RUN set -x \
   && mkdir /opt/bin \
   && /install-tools.sh \
   ;
+
+# Download helm plugins
+# Set HELM_PLUGINS since we can't install these in /home/rundeck since it is normally mounted into the container
+COPY install-helm-plugins.sh /
+RUN gosu rundeck /install-helm-plugins.sh
+ENV HELM_PLUGINS="/var/lib/rundeck/.local/share/helm/plugins"
 
 ENV PATH=/usr/local/sbin:/usr/local/bin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
