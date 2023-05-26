@@ -95,8 +95,8 @@ install_oras() {
 }
 
 install_crane() {
+  local version checksum checksum_var version_parts major_minor x86_64
   x86_64="x86_64"
-  local version checksum checksum_var version_parts major_minor
   version="${1}"
   checksum_var="CRANE_${version//\./_}_CHECKSUM_${ARCH^^}"
   checksum="${!checksum_var}"
