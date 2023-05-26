@@ -76,6 +76,43 @@ install_yq() {
   rm yq_linux_${!ARCH}
 }
 
+install_oras() {
+  local version checksum checksum_var version_parts major_minor
+  version="${1}"
+  checksum_var="ORAS_${version//\./_}_CHECKSUM_${ARCH^^}"
+  checksum="${!checksum_var}"
+
+  echo "https://github.com/oras-project/oras/releases/download/v${version}/oras_${version}_linux_${!ARCH}.tar.gz"
+  echo "${checksum}"
+
+  wget -nv "https://github.com/oras-project/oras/releases/download/v${version}/oras_${version}_linux_${!ARCH}.tar.gz"
+  echo "${checksum}  oras_${version}_linux_${!ARCH}.tar.gz" > SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum oras_${version}_linux_${!ARCH}.tar.gz)"; exit 1; )
+
+  tar -zxf oras_${version}_linux_${!ARCH}.tar.gz oras
+  install -o root -g root -m 755 oras "/opt/bin/oras"
+  rm oras
+}
+
+install_crane() {
+  x86_64="x86_64"
+  local version checksum checksum_var version_parts major_minor
+  version="${1}"
+  checksum_var="CRANE_${version//\./_}_CHECKSUM_${ARCH^^}"
+  checksum="${!checksum_var}"
+
+  echo "https://github.com/google/go-containerregistry/releases/download/v${version}/go-containerregistry_Linux_${!ARCH}.tar.gz"
+  echo "${checksum}"
+
+  wget -nv "https://github.com/google/go-containerregistry/releases/download/v${version}/go-containerregistry_Linux_${!ARCH}.tar.gz"
+  echo "${checksum}  go-containerregistry_Linux_${!ARCH}.tar.gz" > SHA256SUM
+  sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum go-containerregistry_Linux_${!ARCH}.tar.gz)"; exit 1; )
+
+  tar -zxf go-containerregistry_Linux_${!ARCH}.tar.gz crane
+  install -o root -g root -m 755 crane "/opt/bin/crane"
+  rm crane
+}
+
 install_helm() {
   local version checksum checksum_var version_parts major_minor
   version="${1}"
@@ -181,6 +218,12 @@ LEGO_4_4_0_CHECKSUM_AARCH64=abe0e795be083143bc72ffe0f62670d96d1d33caeec2649b452d
 YQ_4_34_1_CHECKSUM_X86_64=df8b1ea3ebd84bac31691e5b77b87c798f64c845370593e56603b9892cea3e1c
 YQ_4_34_1_CHECKSUM_AARCH64=e43d788ca14c9bd949ed1c828d6073a6b42d8c78c9e454095699b1a1e844abf2
 
+ORAS_1_0_0_CHECKSUM_X86_64=8533c9ea1e5a0d5eb1dfc5094c0e8ef106d15462f8a119077548f88937ed2133
+ORAS_1_0_0_CHECKSUM_AARCH64=332ba74c043ed590ab0fb61656e6d274243e915cb150d48be4ad64ed591dcc84
+
+CRANE_0_15_2_CHECKSUM_X86_64=bd5f72ae96373ac640679a6108280b6d76698773ca21f293ae30cc17413e2ad1
+CRANE_0_15_2_CHECKSUM_AARCH64=afa0bf56d95fa86fe71d5dadb5e03960b7c0586eea84270cca40b41a6d61fbb2
+
 ARGO_3_1_5_CHECKSUM_X86_64=68ebb30e79aa5ab649dbd0feb6e227b0dcff2b2983c00e176cc523a9f883567b
 ARGO_3_1_5_CHECKSUM_AARCH64=dc3c36081b6b49c8977dcffa9393a29e83568fba36a35f472caaac108674c03e
 ARGO_3_4_5_CHECKSUM_X86_64=0528ff0c0aa87a3f150376eee2f1b26e8b41eb96578c43d715c906304627d3a1
@@ -191,6 +234,10 @@ install_sops 3.7.3
 install_lego 4.4.0
 
 install_yq 4.34.1
+
+install_oras 1.0.0
+
+install_crane 0.15.2
 
 install_helm 3.6.3
 install_helm 3.7.2
