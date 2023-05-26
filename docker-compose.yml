@@ -14,6 +14,33 @@ services:
       - rundeck-var:/var/rundeck
       - rundeck-logs:/var/log/rundeck
 
+
+  rundeck-old:
+    image: quay.io/panubo/rundeck:4.0.1-3
+    ports:
+      - "4440:4440"
+    volumes:
+      - ./test/config:/config
+      - rundeck-lib-data:/var/lib/rundeck/data
+      - rundeck-lib-logs:/var/lib/rundeck/var
+      - rundeck-lib-logs:/var/lib/rundeck/logs
+      - rundeck-home:/home/rundeck
+      - rundeck-var:/var/rundeck
+      - rundeck-logs:/var/log/rundeck
+
+  rundeck-arm:
+    image: panubo/rundeck:arm64
+    ports:
+      - "4440:4440"
+    volumes:
+      - ./test/config:/config
+      - rundeck-lib-data:/var/lib/rundeck/data
+      - rundeck-lib-logs:/var/lib/rundeck/var
+      - rundeck-lib-logs:/var/lib/rundeck/logs
+      - rundeck-home:/home/rundeck
+      - rundeck-var:/var/rundeck
+      - rundeck-logs:/var/log/rundeck
+
 volumes:
   rundeck-lib-data: {}
   rundeck-lib-logs: {}
