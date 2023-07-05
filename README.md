@@ -4,7 +4,7 @@ Docker image with [Rundeck](http://rundeck.org/) and [Ansible](https://www.ansib
 
 This image configures Rundeck to use PAM authentication so we can use secure password hashes (SHA512 CRYPT) that aren't supported by JAAS (OBF, MD5 and CRYPT).
 
-The configuration is fairly opinionated, and is probably not suitable as a general purpose image. The embedded H2 database is used to reduce external dependencies.
+The configuration is very opinionated, and is probably not suitable as a general purpose image. The embedded H2 database is used to reduce external dependencies.
 
 ## Upgrading
 
@@ -92,16 +92,17 @@ The following plugins are installed (excluding the base plugins):
 
 ## Tools
 
-The following tools are pre-installed in the image
+The following tools are pre-installed in the image:
 
 * [Ansible](https://www.ansible.com/)
 * [Argo Workflows CLI](https://github.com/argoproj/argo-workflows/) **VERSIONED**
 * [awscli](https://aws.amazon.com/cli/)
 * [gcloud cli](https://cloud.google.com/sdk/)
-* [mozilla/sops](https://github.com/mozilla/sops)
 * [go-acme/lego](https://github.com/go-acme/lego)
 * [helm](https://helm.sh/) **VERSIONED**
+* [kiwigrid/k8s-sidecar](https://github.com/kiwigrid/k8s-sidecar)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) **VERSIONED**
+* [mozilla/sops](https://github.com/mozilla/sops)
 
 **VERSIONED** tools are not in the PATH by default. Scripts need to call the version required directly. Versions of these tools are shortened to MAJOR.MINOR so any PATCH releases can be upgraded in-place.
 
