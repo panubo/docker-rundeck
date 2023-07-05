@@ -111,6 +111,18 @@ RUN set -x \
   && pip install apprise==1.3.0 \
   ;
 
+# Install k8s-sidecar
+RUN set -x \
+  && cd /tmp \
+  && git clone https://github.com/macropin/k8s-sidecar.git \
+  && cd k8s-sidecar \
+  && git checkout 74fc7ef0869fc725a8106aeee52c47567648a831 \
+  && cd src \
+  && pip install -r requirements.txt \
+  && cp -a /tmp/k8s-sidecar/src/ /sidecar \
+  && rm -rf /tmp/k8s-sidecar \
+  ;
+
 # Download plugins
 COPY install-plugins.sh /
 RUN /install-plugins.sh
@@ -143,6 +155,7 @@ VOLUME ["/var/lib/rundeck/data", "/var/lib/rundeck/logs", "/var/rundeck", "/var/
 
 # Add config files
 COPY run.sh /run.sh
+COPY sidecar.sh /sidecar.sh
 COPY ansible-bootstrap/ /ansible-bootstrap/
 COPY run-h2-v2-migration.sh /run-h2-v2-migration.sh
 
