@@ -114,9 +114,10 @@ RUN set -x \
 # Install k8s-sidecar
 RUN set -x \
   && cd /tmp \
-  && git clone https://github.com/macropin/k8s-sidecar.git \
+  && git clone https://github.com/kiwigrid/k8s-sidecar.git \
   && cd k8s-sidecar \
-  && git checkout 74fc7ef0869fc725a8106aeee52c47567648a831 \
+  # merged fixes
+  && git checkout 392b8392c4511b0ae6f8d52beb1eda77a07ec970 \
   && cd src \
   && pip install -r requirements.txt \
   && cp -a /tmp/k8s-sidecar/src/ /sidecar \
