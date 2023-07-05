@@ -7,7 +7,7 @@
     - rundeck_tokens: []
 
   tasks:
-    - include_tasks: configure_scripts.yml
+    - include_tasks: scripts.yml
     - include_tasks: configure.yml
     - include_tasks: permissions.yml
     - include_tasks: ssh.yml

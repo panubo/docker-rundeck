@@ -4,9 +4,17 @@
   set_fact:
     rundeck_token_configuresh: "{{ lookup('password', '/dev/null chars=ascii_letters,digits') }}"
 
+- name: Create scripts directory
+  file:
+    state: directory
+    owner: rundeck
+    group: rundeck
+    mode: "0755"
+    path: /scripts
+
 - name: Write configure.sh
   template:
-    dest: "/configure.sh"
+    dest: "/scripts/configure.sh"
     src: "templates/configure.sh.j2"
     mode: "0700"
     owner: root
@@ -14,7 +22,7 @@
 
 - name: Write export_jobs.sh
   template:
-    dest: "/export_jobs.sh"
+    dest: "/scripts/export_jobs.sh"
     src: "templates/export_jobs.sh.j2"
     mode: "0700"
     owner: root
