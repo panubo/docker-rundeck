@@ -1,4 +1,6 @@
-# Panubo build and push to Quay.io and ECR Public
+# Source: https://github.com/panubo/reference-github-actions/blob/main/docker-images/build-push.yml
+#
+# Description: Panubo build and push to Quay.io and ECR Public
 # This GH Action is intended for public docker images that package upstream applications/services (ie not for projects of Panubo's).
 # For repos that build multiple repos use the multi-build-push.yml workflow.
 #
@@ -9,6 +11,8 @@
 # Automated testing is triggered by `make _ci_test`, if no test is required the Makefile target should just run `true`.
 # Before tests are run a Docker build is performed, the resulting image has a tag of "test"
 # BATS is installed since it is commonly required by the tests.
+#
+# LICENSE: MIT License, Copyright (c) 2021-2023 Volt Grid Pty Ltd t/a Panubo
 
 name: build and push on main and tags
 
