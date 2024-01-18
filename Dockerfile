@@ -1,4 +1,4 @@
-FROM docker.io/debian:bullseye
+FROM debian:12
 
 # Set encoding
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -6,35 +6,17 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release gosu skopeo \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release gosu skopeo apprise awscli \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install JDK11
+# Install JDK17  as 11 has no installation candidate
 RUN set -x \
   && export DEBIAN_FRONTEND=noninteractive \
   && mkdir /etc/ssl/certs/java/ \
   && apt-get update \
-  && apt-get -y install openjdk-11-jre-headless \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  ;
-
-# Install AWS CLI
-ENV AWS_CLI_VERSION=1.27.96 AWS_CLI_CHECKSUM=c8085a4701a63d99f44fcc2e8eab78a5264ee0a2705f4e0193317428dd5ede55
-RUN set -x \
-  && apt-get update \
-  && apt-get -y install python3 python3-venv unzip \
-  && ln -s /usr/bin/python3 /usr/bin/python \
-  && cd /tmp \
-  && wget -nv https://s3.amazonaws.com/aws-cli/awscli-bundle-${AWS_CLI_VERSION}.zip -O /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
-  && echo "${AWS_CLI_CHECKSUM}  awscli-bundle-${AWS_CLI_VERSION}.zip" > /tmp/SHA256SUM \
-  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum awscli-bundle-${AWS_CLI_VERSION}.zip)"; exit 1; )) \
-  && unzip awscli-bundle-${AWS_CLI_VERSION}.zip \
-  && /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
-  && rm -rf /tmp/awscli-bundle /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
-  && apt-get -y remove unzip \
+  && apt-get -y install openjdk-17-jre-headless \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
@@ -69,7 +51,7 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=4.11.0.20230313-1_all RUNDECK_CHECKSUM=39b101a27dd99ce614d95cdd934ba408f6f85fc233d95c686fe013cbcbda1673
+ENV RUNDECK_VERSION=4.17.4.20231216-1_all RUNDECK_CHECKSUM=fcdeec7824ff4c72e9c03db7fe4c00846101b85b15a1f8c7ff4e289f5eaf9817
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
@@ -83,7 +65,7 @@ RUN set -x \
   ;
 
 # Install Rundeck CLI
-ENV RUNDECK_CLI_VERSION=2.0.4-1_all RUNDECK_CLI_CHECKSUM=987a4b36870a0b0fd6a04f595ba5b179103370e5da7106cd881a8e4caec9fa11
+ENV RUNDECK_CLI_VERSION=2.0.8-1_all RUNDECK_CLI_CHECKSUM=0bd1857b5f84e8ecc91212587cf5c666b2bc8a7f4299461843647f1ff7c90edb
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_${RUNDECK_CLI_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CLI_CHECKSUM}  rundeck_${RUNDECK_CLI_VERSION}.deb" > /tmp/SHA256SUM \
@@ -102,27 +84,24 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install apprise github.com/caronc/apprise
-RUN set -x \
-  && apt-get update \
-  && apt-get install -y python3-pip \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && pip install apprise==1.3.0 \
-  ;
-
 # Install k8s-sidecar
 RUN set -x \
+  && apt-get update \
+  && apt-get -y install git python3.11-venv python3 python3-pip gcc \
   && cd /tmp \
   && git clone https://github.com/kiwigrid/k8s-sidecar.git \
   && cd k8s-sidecar \
-  # merged fixes
-  && git checkout 392b8392c4511b0ae6f8d52beb1eda77a07ec970 \
   && cd src \
-  && pip install -r requirements.txt \
+  && python3 -m venv .venv && .venv/bin/pip install --no-cache-dir -U pip setuptools \
+  && .venv/bin/pip install --no-cache-dir -r requirements.txt \
+  && rm requirements.txt \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
   && cp -a /tmp/k8s-sidecar/src/ /sidecar \
   && rm -rf /tmp/k8s-sidecar \
   ;
+  # && find .venv \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' \+
+  
 
 # Download plugins
 COPY install-plugins.sh /
