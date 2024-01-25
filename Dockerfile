@@ -1,4 +1,4 @@
-FROM debian:12
+FROM docker.io/debian:12
 
 # Set encoding
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -11,16 +11,13 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install JDK17  as 11 has no installation candidate
+# Install JDK11
+COPY install-openjdk-11.sh /
 RUN set -x \
-  && export DEBIAN_FRONTEND=noninteractive \
   && mkdir /etc/ssl/certs/java/ \
-  && apt-get update \
-  && apt-get -y install openjdk-17-jre-headless \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
+  && /install-openjdk-11.sh \
   ;
-
+  
 # Install Google Cloud SDK
 RUN set -x \
   && export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
@@ -100,7 +97,6 @@ RUN set -x \
   && cp -a /tmp/k8s-sidecar/src/ /sidecar \
   && rm -rf /tmp/k8s-sidecar \
   ;
-  # && find .venv \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' \+
   
 
 # Download plugins
