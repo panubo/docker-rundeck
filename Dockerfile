@@ -86,7 +86,7 @@ RUN set -x \
   && apt-get update \
   && apt-get -y install git python3.11-venv python3 python3-pip gcc \
   && cd /tmp \
-  && git clone https://github.com/kiwigrid/k8s-sidecar.git \
+  && git clone https://github.com/kiwigrid/k8s-sidecar.git --branch 1.25.3 \
   && cd k8s-sidecar \
   && cd src \
   && python3 -m venv .venv && .venv/bin/pip install --no-cache-dir -U pip setuptools \

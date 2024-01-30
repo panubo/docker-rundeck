@@ -17,3 +17,5 @@ apt-get -y install openjdk-11-jdk
 
 apt-get clean
 rm -rf /var/lib/apt/lists/*
+
+echo "Finished installing jdk 11"
