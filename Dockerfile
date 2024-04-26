@@ -22,7 +22,7 @@ RUN set -x \
   ;
 
 # Install AWS CLI
-ENV AWS_CLI_VERSION=1.27.96 AWS_CLI_CHECKSUM=c8085a4701a63d99f44fcc2e8eab78a5264ee0a2705f4e0193317428dd5ede55
+ENV AWS_CLI_VERSION=1.32.90 AWS_CLI_CHECKSUM=4ac48cc9df2731fd4d57bee573cc889c083815bb48a7696b8f15cb313c051d69
 RUN set -x \
   && apt-get update \
   && apt-get -y install python3 python3-venv unzip \
@@ -69,7 +69,7 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=4.11.0.20230313-1_all RUNDECK_CHECKSUM=39b101a27dd99ce614d95cdd934ba408f6f85fc233d95c686fe013cbcbda1673
+ENV RUNDECK_VERSION=4.17.6.20240402-1_all RUNDECK_CHECKSUM=9b20f4f7536a1fef36a3f057069b2c1c99c43e4ee963e88f0250204c9982c2a6
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
@@ -83,7 +83,7 @@ RUN set -x \
   ;
 
 # Install Rundeck CLI
-ENV RUNDECK_CLI_VERSION=2.0.4-1_all RUNDECK_CLI_CHECKSUM=987a4b36870a0b0fd6a04f595ba5b179103370e5da7106cd881a8e4caec9fa11
+ENV RUNDECK_CLI_VERSION=2.0.8-1_all RUNDECK_CLI_CHECKSUM=0bd1857b5f84e8ecc91212587cf5c666b2bc8a7f4299461843647f1ff7c90edb
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck-cli_${RUNDECK_CLI_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CLI_CHECKSUM}  rundeck_${RUNDECK_CLI_VERSION}.deb" > /tmp/SHA256SUM \
@@ -108,18 +108,19 @@ RUN set -x \
   && apt-get install -y python3-pip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
-  && pip install apprise==1.3.0 \
+  && pip install apprise==1.7.6 \
   ;
 
 # Install k8s-sidecar
 RUN set -x \
   && cd /tmp \
-  && git clone https://github.com/kiwigrid/k8s-sidecar.git \
+  && git clone https://github.com/kiwigrid/k8s-sidecar.git --branch 1.26.1 \
   && cd k8s-sidecar \
-  # merged fixes
-  && git checkout 392b8392c4511b0ae6f8d52beb1eda77a07ec970 \
   && cd src \
-  && pip install -r requirements.txt \
+  && pip install --no-cache-dir -r requirements.txt \
+  && rm requirements.txt \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
   && cp -a /tmp/k8s-sidecar/src/ /sidecar \
   && rm -rf /tmp/k8s-sidecar \
   ;
