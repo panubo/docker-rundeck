@@ -1,4 +1,4 @@
-FROM docker.io/debian:12
+FROM docker.io/debian:bullseye
 
 # Set encoding
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -6,18 +6,39 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 # Install base packages
 RUN set -x \
   && apt-get update \
-  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release gosu skopeo apprise awscli \
+  && apt-get install --no-install-recommends --no-install-suggests -y wget curl ca-certificates vim jq openssh-client uuid-runtime procps gnupg2 dirmngr db-util libpam-modules libpam0g libpam0g-dev git make lsb-release gosu skopeo \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
 # Install JDK11
-COPY install-openjdk-11.sh /
 RUN set -x \
+  && export DEBIAN_FRONTEND=noninteractive \
   && mkdir /etc/ssl/certs/java/ \
-  && /install-openjdk-11.sh \
+  && apt-get update \
+  && apt-get -y install openjdk-11-jre-headless \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
   ;
-  
+
+# Install AWS CLI
+ENV AWS_CLI_VERSION=1.32.90 AWS_CLI_CHECKSUM=4ac48cc9df2731fd4d57bee573cc889c083815bb48a7696b8f15cb313c051d69
+RUN set -x \
+  && apt-get update \
+  && apt-get -y install python3 python3-venv unzip \
+  && ln -s /usr/bin/python3 /usr/bin/python \
+  && cd /tmp \
+  && wget -nv https://s3.amazonaws.com/aws-cli/awscli-bundle-${AWS_CLI_VERSION}.zip -O /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
+  && echo "${AWS_CLI_CHECKSUM}  awscli-bundle-${AWS_CLI_VERSION}.zip" > /tmp/SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum awscli-bundle-${AWS_CLI_VERSION}.zip)"; exit 1; )) \
+  && unzip awscli-bundle-${AWS_CLI_VERSION}.zip \
+  && /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+  && rm -rf /tmp/awscli-bundle /tmp/awscli-bundle-${AWS_CLI_VERSION}.zip \
+  && apt-get -y remove unzip \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  ;
+
 # Install Google Cloud SDK
 RUN set -x \
   && export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
@@ -48,7 +69,7 @@ RUN set -x \
   ;
 
 # Install Rundeck
-ENV RUNDECK_VERSION=4.17.4.20231216-1_all RUNDECK_CHECKSUM=fcdeec7824ff4c72e9c03db7fe4c00846101b85b15a1f8c7ff4e289f5eaf9817
+ENV RUNDECK_VERSION=4.17.6.20240402-1_all RUNDECK_CHECKSUM=9b20f4f7536a1fef36a3f057069b2c1c99c43e4ee963e88f0250204c9982c2a6
 RUN set -x \
   && wget --no-verbose -O /tmp/rundeck_${RUNDECK_VERSION}.deb "https://packagecloud.io/pagerduty/rundeck/packages/any/any/rundeck_${RUNDECK_VERSION}.deb/download.deb" \
   && echo "${RUNDECK_CHECKSUM}  rundeck_${RUNDECK_VERSION}.deb" > /tmp/SHA256SUM \
@@ -81,16 +102,22 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install k8s-sidecar
+# Install apprise github.com/caronc/apprise
 RUN set -x \
   && apt-get update \
-  && apt-get -y install git python3.11-venv python3 python3-pip gcc \
+  && apt-get install -y python3-pip \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && pip install apprise==1.7.6 \
+  ;
+
+# Install k8s-sidecar
+RUN set -x \
   && cd /tmp \
-  && git clone https://github.com/kiwigrid/k8s-sidecar.git --branch 1.25.3 \
+  && git clone https://github.com/kiwigrid/k8s-sidecar.git --branch 1.26.1 \
   && cd k8s-sidecar \
   && cd src \
-  && python3 -m venv .venv && .venv/bin/pip install --no-cache-dir -U pip setuptools \
-  && .venv/bin/pip install --no-cache-dir -r requirements.txt \
+  && pip install --no-cache-dir -r requirements.txt \
   && rm requirements.txt \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
