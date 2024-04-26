@@ -124,7 +124,7 @@ RUN set -x \
   && cp -a /tmp/k8s-sidecar/src/ /sidecar \
   && rm -rf /tmp/k8s-sidecar \
   ;
-  
+
 # Download plugins
 COPY install-plugins.sh /
 RUN /install-plugins.sh
