@@ -114,7 +114,7 @@ RUN set -x \
 # Install k8s-sidecar
 RUN set -x \
   && cd /tmp \
-  && git clone https://github.com/kiwigrid/k8s-sidecar.git --branch 1.26.1 \
+  && git clone https://github.com/macropin/k8s-sidecar.git --branch fix/file-mode \
   && cd k8s-sidecar \
   && cd src \
   && pip install --no-cache-dir -r requirements.txt \
