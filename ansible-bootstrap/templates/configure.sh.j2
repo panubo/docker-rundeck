@@ -67,9 +67,9 @@ load_project_acl() {
 }
 
 load_application_acl() {
-  # copy acl policies to where they can be accessed by rundeck
+  # Load application ACL policies to database
   echo "> Loading ACL $(basename "${1}")"
-  install -o root -g rundeck --mode=0640 "${1}" /etc/rundeck/$(basename "${1}")
+  rd system acls create --file "${1}" --name=$(basename "${1}")
 }
 
 contains() {
@@ -96,7 +96,7 @@ if [ -d "${CONFIG_DIR}/projects" ]; then
 fi
 
 if [ -d "${CONFIG_DIR}/acls" ]; then
-  # Create application ALCS (always replace)
+  # Create application ACLS (always replace)
   for ACL in $(find "${CONFIG_DIR}/acls" -maxdepth 1 -mindepth 1 -type f -name '*.aclpolicy'); do
       load_application_acl "${ACL}"
   done
