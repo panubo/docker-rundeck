@@ -27,3 +27,19 @@
     mode: "0700"
     owner: root
     group: root
+
+- name: Write trigger_rundeck_job.sh
+  template:
+    dest: "/scripts/trigger_rundeck_job.sh"
+    src: "templates/trigger_rundeck_job.sh.j2"
+    mode: "0700"
+    owner: root
+    group: root
+
+- name: Write trigger_registry_rules.sh
+  template:
+    dest: "/scripts/trigger_registry_rules.sh"
+    src: "templates/trigger_registry_rules.sh.j2"
+    mode: "0700"
+    owner: root
+    group: root

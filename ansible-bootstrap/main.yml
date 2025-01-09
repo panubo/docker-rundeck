@@ -5,6 +5,7 @@
 
   vars:
     - rundeck_tokens: []
+    - rundeck_triggers_registry_rules: []
 
   tasks:
     - include_tasks: scripts.yml

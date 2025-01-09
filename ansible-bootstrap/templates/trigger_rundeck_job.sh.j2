@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+#
+# LICENSE: MIT License, Copyright (C) 2020-2025 Volt Grid Pty Ltd
+#
+# Triggers a Rundeck Job using the API
+# Used by image triggers to trigger a job in response to a registry event
+
+set -euo pipefail
+IFS=$'\n\t'
+
+echo ">> Running $(basename "$0")"
+
+RD_TOKEN="{{ rundeck_token_configuresh }}"
+CONFIG_DIR="${CONFIG_DIR:-/config}"
+
+project="${1}"
+job="${2}"
+shift 2
+
+# wait_http URL [TIMEOUT] [HTTP TIMEOUT]
+wait_http() {
+  # Wait for http service to be available
+  command -v curl >/dev/null 2>&1 || { error "This function requires curl to be installed."; return 1; }
+  local url="${1:-'http://localhost'}"
+  local timeout="${2:-30}"
+  local http_timeout="${3:-2}"
+  echo -n "Connecting to HTTP at ${url}"
+  for (( i=0;; i++ )); do
+    if [[ "${i}" -eq "${timeout}" ]]; then
+      echo " timeout!"
+      return 99
+    fi
+    sleep 1
+    (curl --max-time "${http_timeout}" "${url}") &>/dev/null && break
+    echo -n "."
+  done
+  echo " connected."
+  exec 3>&-
+  exec 3<&-
+}
+
+wait_http "${RD_URL}" 300
+
+data=()
+
+for item in "${@}"; do
+  data+=("-d" "option.${item}")
+done
+
+get_job_id() {
+  curl "${RD_URL}/api/14/project/${project}/jobs?jobExactFilter=${job}" -H "Accept: application/json" -H "X-Rundeck-Auth-Token: ${RD_TOKEN}" -sSf | jq -r '.[0].id'
+}
+
+curl -XPOST "${RD_URL}/api/18/job/$(get_job_id)/run" -H "Accept: application/json" -H "X-Rundeck-Auth-Token: ${RD_TOKEN}" -sSf "${data[@]}" | jq .
+
+echo ">> Finished $(basename "$0")"

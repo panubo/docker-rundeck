@@ -125,6 +125,26 @@ RUN set -x \
   && rm -rf /tmp/k8s-sidecar \
   ;
 
+# Install Image Triggers
+ENV IMAGE_TRIGGERS_VERSION=0.0.4 \
+    IMAGE_TRIGGERS_CHECKSUM_X86_64=d48257a84ca50a9d955a5e41ba954e68724ad0a6baf5ecf4fab8120262925efc \
+    IMAGE_TRIGGERS_CHECKSUM_AARCH64=b242e58d4502e11542d64e5d4905c7f480a0444a3081b03ba9f3d6d7256ef298
+RUN set -x \
+  && if [ "$(uname -m)" = "x86_64" ] ; then \
+        IMAGE_TRIGGERS_CHECKSUM="${IMAGE_TRIGGERS_CHECKSUM_X86_64}"; \
+        ARCH="linux_amd64"; \
+      elif [ "$(uname -m)" = "aarch64" ]; then \
+        IMAGE_TRIGGERS_CHECKSUM="${IMAGE_TRIGGERS_CHECKSUM_AARCH64}"; \
+        ARCH="linux_arm64"; \
+      fi \
+  && wget --no-verbose https://github.com/panubo/image-triggers/releases/download/v${IMAGE_TRIGGERS_VERSION}/image-triggers_${IMAGE_TRIGGERS_VERSION}_${ARCH}.tar.gz -O /tmp/image-triggers.tar.gz \
+  && echo "${IMAGE_TRIGGERS_CHECKSUM}  image-triggers.tar.gz" > /tmp/SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum image-triggers.tar.gz)"; exit 1; )) \
+  && tar -C /usr/local/bin -zxf /tmp/image-triggers.tar.gz \
+  && chmod +x /usr/local/bin/image-triggers \
+  && rm -f /tmp/image-triggers.tar.gz /tmp/SHA256SUM \
+  ;
+
 # Download plugins
 COPY install-plugins.sh /
 RUN /install-plugins.sh

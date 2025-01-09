@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+#
+# LICENSE: MIT License, Copyright (C) 2020-2025 Volt Grid Pty Ltd
+#
+# This triggers Rundeck jobs in response to registry events. Acts as a
+# filter on which images/tags trigger a corresponding action.
+# This is used by image-triggers.
+
+set -euo pipefail
+IFS=$'\n\t'
+
+image_name="${1}"
+image_tag="${2}"
+
+rundeck() {
+  echo ">> Running: trigger_rundeck_job.sh ${@}"
+  /scripts/trigger_rundeck_job.sh "${@}"
+}
+
+{% for rule in rundeck_triggers_registry_rules %}
+{% if loop.first %}if{% else %}elif{% endif %} [[ "${image_name}" =~ {{ rule.rule.name }} ]] && [[ "${image_tag}" =~ {{ rule.rule.tag }} ]]; then
+{% for action in rule.actions %}
+  echo ">> Matched ${image_name}:${image_tag}"
+  {{ action }}
+{% endfor %}
+{% endfor %}
+else
+  echo ">> No matching rules for ${image_name}:${image_tag}"
+fi
