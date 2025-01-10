@@ -178,6 +178,7 @@ VOLUME ["/var/lib/rundeck/data", "/var/lib/rundeck/logs", "/var/rundeck", "/var/
 # Add config files
 COPY run.sh /run.sh
 COPY sidecar.sh /sidecar.sh
+COPY triggers.sh /triggers.sh
 COPY ansible-bootstrap/ /ansible-bootstrap/
 COPY run-h2-v2-migration.sh /run-h2-v2-migration.sh
 
