@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Delay config sidecar start until Rundeck is up and running
+# Delay image-triggers sidecar start until Rundeck is up and running
 
 set -e
 
@@ -28,5 +28,5 @@ wait_http() {
 
 wait_http "${RD_URL}" 300
 
-echo ">> Starting sidecar.py"
-exec /sidecar/sidecar.py
+echo ">> Starting image-triggers"
+exec /usr/local/bin/image-triggers "$@"
