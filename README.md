@@ -13,7 +13,7 @@ However when upgrading to 4.x versions from 3.x or earlier, the following must b
 
 ### 4.x upgrade
 
-The following must be run to ensure that all the Rundeck files are owned by the correct uid/gid.
+The following must be run to ensure that all the Rundeck files are owned by the correct UID/GID.
 
 ```
 find . -uid 102 -exec chown --no-dereference 103 {} \;
@@ -52,6 +52,13 @@ rundeck_tokens:
   - user: apiadmin
     token: somerandomstring
     role: admin
+
+rundeck_triggers_registry_rules:
+  - rule:
+      name: ^myrepo/myapp$
+      tag: ^develop-.*$
+    actions:
+      - rundeck MyProject appDeployAll app_group=my-app dryrun=false "image_tag=${image_tag}"
 ```
 
 The global config (`/etc/rundeck`) directory is intended to be managed by the config options above and not editable at runtime.
@@ -116,43 +123,63 @@ The directory structure looks like:
 ├── argo-3.4
 │   └── bin
 │       └── argo
+├── argo-3.5
+│   └── bin
+│       └── argo
+├── argo-3.6
+│   └── bin
+│       └── argo
 ├── bin
+│   ├── crane
+│   ├── h2-2.1.210.jar
+│   ├── h2-shell.sh
 │   ├── lego
-│   └── sops
+│   ├── oras
+│   ├── sops
+│   └── yq
 ├── helm-3.10
 │   └── bin
 │       └── helm
 ├── helm-3.11
 │   └── bin
 │       └── helm
-├── helm-3.6
+├── helm-3.12
 │   └── bin
 │       └── helm
-├── helm-3.7
+├── helm-3.13
 │   └── bin
 │       └── helm
-├── helm-3.8
+├── helm-3.14
+│   └── bin
+│       └── helm
+├── helm-3.15
+│   └── bin
+│       └── helm
+├── helm-3.16
 │   └── bin
 │       └── helm
 ├── helm-3.9
 │   └── bin
 │       └── helm
-├── kubectl-1.21
-│   └── bin
-│       └── kubectl
-├── kubectl-1.22
-│   └── bin
-│       └── kubectl
-├── kubectl-1.23
-│   └── bin
-│       └── kubectl
-├── kubectl-1.24
-│   └── bin
-│       └── kubectl
 ├── kubectl-1.25
 │   └── bin
 │       └── kubectl
 ├── kubectl-1.26
+│   └── bin
+│       └── kubectl
+├── kubectl-1.27
+│   └── bin
+│       └── kubectl
+├── kubectl-1.28
+│   └── bin
+│       └── kubectl
+├── kubectl-1.29
+│   └── bin
+│       └── kubectl
+├── kubectl-1.30
+│   └── bin
+│       └── kubectl
+├── kubectl-1.31
 │   └── bin
 │       └── kubectl
 └── rundeck-plugins
