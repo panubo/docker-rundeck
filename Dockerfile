@@ -92,6 +92,18 @@ RUN set -x \
   && rm -f /tmp/rundeck_${RUNDECK_CLI_VERSION}.deb /tmp/SHA256SUM \
   ;
 
+# Install H2 Java module for cli access to h2 - must match version used by Rundeck
+ENV RUNDECK_H2_VERSION=2.1.210 RUNDECK_H2_CHECKSUM=edc57299926297fd9315e04de75f8538c4cb5fe97fd3da2a1e5cee6a4c98b5cd
+RUN set -x \
+  && wget --no-verbose -O /tmp/h2-${RUNDECK_H2_VERSION}.jar https://repo1.maven.org/maven2/com/h2database/h2/${RUNDECK_H2_VERSION}/h2-${RUNDECK_H2_VERSION}.jar \
+  && echo "${RUNDECK_H2_CHECKSUM}  h2-${RUNDECK_H2_VERSION}.jar" > /tmp/SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum h2-${RUNDECK_H2_VERSION}.jar)"; exit 1; )) \
+  && mkdir -p /opt/bin \
+  && install -m 755 /tmp/h2-${RUNDECK_H2_VERSION}.jar /opt/bin/h2-${RUNDECK_H2_VERSION}.jar \
+  && rm -f /tmp/h2-${RUNDECK_H2_VERSION}.jar /tmp/SHA256SUM \
+  ;
+COPY h2-shell.sh /opt/bin/h2-shell.sh
+
 # Install Ansible
 RUN set -x \
   && echo 'deb http://ppa.launchpad.net/ansible/ansible/ubuntu trusty main' > /etc/apt/sources.list.d/ansible.list \
@@ -152,7 +164,7 @@ RUN /install-plugins.sh
 # Install tools
 COPY install-tools.sh /
 RUN set -x \
-  && mkdir /opt/bin \
+  && mkdir -p /opt/bin \
   && /install-tools.sh \
   ;
 
