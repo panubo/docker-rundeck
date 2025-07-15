@@ -9,6 +9,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Create GitHub Release
@@ -24,11 +27,7 @@ jobs:
         id: get_release_notes
         run: |
           NOTES=$(git log --pretty=format:%s $(git tag --sort=-v:refname | head -1)...$(git tag --sort=-v:refname | head -2 | tail -1) | awk '{ print "-", $0  }')
-          NOTES="${NOTES//'%'/'%25'}"
-          NOTES="${NOTES//$'\n'/'%0A'}"
-          NOTES="${NOTES//$'\r'/'%0D'}"
-          echo "NOTES: ${NOTES}"
-          echo "notes=${NOTES}" >> $GITHUB_OUTPUT
+          printf "notes<<EOF\\n%s\\nEOF\\n" "${NOTES}" >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         id: create_release
