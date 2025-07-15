@@ -12,10 +12,14 @@ RUN set -x \
   ;
 
 # Install JDK11
-COPY install-openjdk-11.sh /
 RUN set -x \
   && mkdir /etc/ssl/certs/java/ \
-  && /install-openjdk-11.sh \
+  && wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
+  && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list \
+  && apt-get update \
+  && apt-get install --no-install-recommends --no-install-suggests -y temurin-11-jdk \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
   ;
   
 # Install Google Cloud SDK
