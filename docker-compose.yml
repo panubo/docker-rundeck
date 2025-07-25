@@ -1,5 +1,7 @@
 ---
-version: "3.9"  # optional since v1.27.0
+
+# docker compose run rundeck
+
 services:
   rundeck:
     image: panubo/rundeck:latest
@@ -16,7 +18,7 @@ services:
 
 
   rundeck-old:
-    image: quay.io/panubo/rundeck:4.0.1-3
+    image: quay.io/panubo/rundeck:4.17.6-10
     ports:
       - "4440:4440"
     volumes:

@@ -5,4 +5,4 @@
 
 set -e
 
-java -cp /opt/bin/h2-${RUNDECK_H2_VERSION}.jar org.h2.tools.Shell -user sa -url jdbc:h2:/var/lib/rundeck/data/rundeckdb
+java -cp /opt/bin/h2.jar org.h2.tools.Shell -user sa -url jdbc:h2:/var/lib/rundeck/data/rundeckdb

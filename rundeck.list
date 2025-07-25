@@ -1,0 +1,2 @@
+deb [signed-by=/etc/apt/keyrings/rundeck.asc] https://packages.rundeck.com/pagerduty/rundeck/any/ any main
+deb-src [signed-by=/etc/apt/keyrings/rundeck.asc] https://packages.rundeck.com/pagerduty/rundeck/any/ any main

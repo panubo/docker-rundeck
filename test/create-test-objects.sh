@@ -8,7 +8,7 @@ IFS=$'\n\t'
 set -x
 
 # Get the auth token from configure.sh
-eval $(cat /configure.sh | grep RD_TOKEN)
+eval $(cat /scripts/configure.sh | grep RD_TOKEN)
 
 # Create a test project
 rd projects create -p TestProject
@@ -29,7 +29,26 @@ cat > /testjob.yaml <<EOF
     - script: |
         #!/usr/bin/env bash
 
-        echo "Hello World!"
+        set -euo pipefail
+        IFS=$'\n\t'
+
+        argocd version || true
+
+        lego --version || true
+
+        sops --version || true
+
+        aws --version || true
+
+        gcloud --version || true
+
+        export PATH=\$PATH:/opt/helm-3.18/bin:/opt/kubectl-1.33/bin:/opt/argo-3.6/bin
+
+        kubectl version --client || true
+
+        helm version || true
+
+        argo version || true
     keepgoing: false
     strategy: node-first
   uuid: ef188ba3-f92b-4b6a-ba46-cf160233b8d4

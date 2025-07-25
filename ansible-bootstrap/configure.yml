@@ -65,8 +65,5 @@
     - "{{ rundeck_users }}"
   # when: create_linux_users is defined and create_linux_users == true
 
-- name: Copy plugins
-  shell: cp -Rf /opt/rundeck-plugins/* /var/lib/rundeck/libext/ && chown -R rundeck:rundeck /var/lib/rundeck/libext
-
 - name: Configure System ACLS
   shell: install -o root -g rundeck --mode=0640 /config/acls/*.aclpolicy /etc/rundeck/ || true
