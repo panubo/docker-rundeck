@@ -29,4 +29,4 @@ wait_http() {
 wait_http "${RD_URL}" 300
 
 echo ">> Starting sidecar.py"
-exec /sidecar/sidecar.py
+exec python3 /sidecar/sidecar.py
