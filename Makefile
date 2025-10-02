@@ -14,6 +14,12 @@ DOCKER_VOLUMES := -v $(shell pwd)/test/config/:/config \
 build:
 	docker build --pull --cache-from ${REGISTRY}/${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${TAG} .
 
+build-amd64:
+	docker build --platform linux/amd64 --pull --cache-from ${REGISTRY}/${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${TAG} .
+
+build-aarch64:
+	docker build --platform linux/aarch64 --pull --cache-from ${REGISTRY}/${IMAGE_NAME}:latest -t ${IMAGE_NAME}:${TAG} .
+
 build-dev:
 	docker build --pull -t ${IMAGE_NAME}:${TAG} .
 

@@ -1,0 +1,5 @@
+Types: deb
+URIs: https://packages.rundeck.com/pagerduty/rundeck/any/
+Suites: any
+Components: main
+Signed-By: /etc/apt/keyrings/rundeck.asc

@@ -11,14 +11,23 @@ RUN set -x \
   && rm -rf /var/lib/apt/lists/* \
   ;
 
-# Install Java, AWS CLI, ansible, apprise and python3-pip
+# Install Java, AWS CLI, ansible and python3-pip
 RUN set -x \
   && export DEBIAN_FRONTEND=noninteractive \
   && mkdir /etc/ssl/certs/java/ \
   && apt-get update \
-  && apt-get -y install openjdk-17-jre-headless awscli ansible apprise python3-pip \
+  && apt-get -y install openjdk-17-jre-headless awscli ansible python3-pip pipx \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
+  ;
+
+# Install apprise with pipx (the bookworm version of pipx doesn't support --global so we're setting env vars)
+RUN set -x \
+  && PIPX_HOME=/opt/pipx \
+  && PIPX_BIN_DIR=/usr/local/bin \
+  && PIPX_MAN_DIR=/usr/local/share/man \
+  && export PIPX_HOME PIPX_BIN_DIR PIPX_MAN_DIR \
+  && pipx install apprise==1.9.3 \
   ;
 
 # Install Google Cloud SDK
@@ -53,9 +62,9 @@ RUN set -x \
 # Install rundeck rundeck-cli
 # Available rundeck versions can be found by execing into a running container and running `apt list -a rundeck` and `apt list -a rundeck-cli`
 # We are explicitly creating the rundeck group and user so the ids don't change
-ENV RUNDECK_VERSION=5.13.0.20250625-1 RUNDECK_CLI_VERSION=2.0.9-1
+ENV RUNDECK_VERSION=5.15.0.20250902-1 RUNDECK_CLI_VERSION=2.0.9-1
 COPY rundeck.asc /etc/apt/keyrings/rundeck.asc
-COPY rundeck.list /etc/apt/sources.list.d/rundeck.list
+COPY rundeck.sources /etc/apt/sources.list.d/rundeck.sources
 RUN set -x \
   && groupadd -g 104 rundeck \
   && useradd --uid 103 --comment "Rundeck user account" --home-dir /home/rundeck --no-create-home --shell /usr/sbin/nologin --gid 104 rundeck \
@@ -91,21 +100,21 @@ RUN set -x \
   ;
 
 # Install Image Triggers
-ENV IMAGE_TRIGGERS_VERSION=0.0.4 \
-  IMAGE_TRIGGERS_CHECKSUM_X86_64=d48257a84ca50a9d955a5e41ba954e68724ad0a6baf5ecf4fab8120262925efc \
-  IMAGE_TRIGGERS_CHECKSUM_AARCH64=b242e58d4502e11542d64e5d4905c7f480a0444a3081b03ba9f3d6d7256ef298
+ENV IMAGE_TRIGGERS_VERSION=0.1.0 \
+  IMAGE_TRIGGERS_CHECKSUM_X86_64=02113698a6288c3181e0fc90c3941795b30e09a3d4bca49b3fb9ba45b8ceb712 \
+  IMAGE_TRIGGERS_CHECKSUM_AARCH64=a85f3e04494605b79dfbbd9717366029eb7287214c4eb5048fcf8d14f8c9a0af
 RUN set -x \
   && if [ "$(uname -m)" = "x86_64" ] ; then \
   IMAGE_TRIGGERS_CHECKSUM="${IMAGE_TRIGGERS_CHECKSUM_X86_64}"; \
-  ARCH="linux_amd64"; \
+  ARCH="amd64"; \
   elif [ "$(uname -m)" = "aarch64" ]; then \
   IMAGE_TRIGGERS_CHECKSUM="${IMAGE_TRIGGERS_CHECKSUM_AARCH64}"; \
-  ARCH="linux_arm64"; \
+  ARCH="arm64"; \
   fi \
-  && wget --no-verbose https://github.com/panubo/image-triggers/releases/download/v${IMAGE_TRIGGERS_VERSION}/image-triggers_${IMAGE_TRIGGERS_VERSION}_${ARCH}.tar.gz -O /tmp/image-triggers.tar.gz \
+  && wget --no-verbose https://github.com/panubo/image-triggers/releases/download/v${IMAGE_TRIGGERS_VERSION}/image-triggers-${IMAGE_TRIGGERS_VERSION}-linux-${ARCH}.tar.gz -O /tmp/image-triggers.tar.gz \
   && echo "${IMAGE_TRIGGERS_CHECKSUM}  image-triggers.tar.gz" > /tmp/SHA256SUM \
   && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum image-triggers.tar.gz)"; exit 1; )) \
-  && tar -C /usr/local/bin -zxf /tmp/image-triggers.tar.gz \
+  && tar -C /usr/local/bin -zxf /tmp/image-triggers.tar.gz --strip-components 1 image-triggers-${IMAGE_TRIGGERS_VERSION}-linux-${ARCH}/image-triggers \
   && chmod +x /usr/local/bin/image-triggers \
   && rm -f /tmp/image-triggers.tar.gz /tmp/SHA256SUM \
   ;
