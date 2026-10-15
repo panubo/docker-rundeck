@@ -42,7 +42,7 @@ cat > /testjob.yaml <<EOF
 
         gcloud --version || true
 
-        export PATH=\$PATH:/opt/helm-3.18/bin:/opt/kubectl-1.33/bin:/opt/argo-3.6/bin
+        export PATH=\$PATH:/opt/helm-3.18/bin:/opt/kubectl-1.34/bin:/opt/argo-3.6/bin
 
         kubectl version --client || true
 
