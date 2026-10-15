@@ -97,25 +97,28 @@ For production use please use a release tag rather than the `latest` floating ta
 
 ## Plugins
 
-The following plugins are installed (excluding the base plugins):
-
-* [Ansible](https://github.com/Batix/rundeck-ansible-plugin/)
-* [EC2 Nodes](https://github.com/rundeck-plugins/rundeck-ec2-nodes-plugin/)
-* [Slack Incoming Webhook](https://github.com/higanworks/rundeck-slack-incoming-webhook-plugin/)
+No Rundeck plugins are pre-installed.
 
 ## Tools
 
 The following tools are pre-installed in the image:
 
 * [Ansible](https://www.ansible.com/)
+* [Argo CD CLI](https://argo-cd.readthedocs.io/)
 * [Argo Workflows CLI](https://github.com/argoproj/argo-workflows/) **VERSIONED**
+* [apprise](https://github.com/caronc/apprise/)
 * [awscli](https://aws.amazon.com/cli/)
+* [crane](https://github.com/google/go-containerregistry)
 * [gcloud cli](https://cloud.google.com/sdk/)
 * [go-acme/lego](https://github.com/go-acme/lego)
 * [helm](https://helm.sh/) **VERSIONED**
+* [h2](https://h2database.com/)
+* [image-triggers](https://github.com/panubo/image-triggers)
 * [kiwigrid/k8s-sidecar](https://github.com/kiwigrid/k8s-sidecar)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) **VERSIONED**
 * [mozilla/sops](https://github.com/mozilla/sops)
+* [oras](https://oras.land/)
+* [yq](https://github.com/mikefarah/yq/)
 
 **VERSIONED** tools are not in the PATH by default. Scripts need to call the version required directly. Versions of these tools are shortened to MAJOR.MINOR so any PATCH releases can be upgraded in-place.
 
@@ -123,75 +126,39 @@ The directory structure looks like:
 
 ```
 /opt
-├── argo-3.1
-│   └── bin
-│       └── argo
 ├── argo-3.4
-│   └── bin
-│       └── argo
-├── argo-3.5
-│   └── bin
-│       └── argo
+│   └── bin
+│       └── argo
 ├── argo-3.6
-│   └── bin
-│       └── argo
+│   └── bin
+│       └── argo
+├── argo-3.7
+│   └── bin
+│       └── argo
 ├── bin
-│   ├── crane
-│   ├── h2-2.1.210.jar
-│   ├── h2-shell.sh
-│   ├── lego
-│   ├── oras
-│   ├── sops
-│   └── yq
-├── helm-3.10
-│   └── bin
-│       └── helm
-├── helm-3.11
-│   └── bin
-│       └── helm
-├── helm-3.12
-│   └── bin
-│       └── helm
-├── helm-3.13
-│   └── bin
-│       └── helm
-├── helm-3.14
-│   └── bin
-│       └── helm
-├── helm-3.15
-│   └── bin
-│       └── helm
-├── helm-3.16
-│   └── bin
-│       └── helm
-├── helm-3.9
-│   └── bin
-│       └── helm
-├── kubectl-1.25
-│   └── bin
-│       └── kubectl
-├── kubectl-1.26
-│   └── bin
-│       └── kubectl
-├── kubectl-1.27
-│   └── bin
-│       └── kubectl
-├── kubectl-1.28
-│   └── bin
-│       └── kubectl
-├── kubectl-1.29
-│   └── bin
-│       └── kubectl
-├── kubectl-1.30
-│   └── bin
-│       └── kubectl
-├── kubectl-1.31
-│   └── bin
-│       └── kubectl
-└── rundeck-plugins
-    ├── ansible-plugin-3.2.0.jar
-    ├── rundeck-ec2-nodes-plugin-1.6.0.jar
-    └── rundeck-slack-incoming-webhook-plugin-0.11.jar
+│   ├── argocd
+│   ├── crane
+│   ├── h2-shell.sh
+│   ├── h2.jar
+│   ├── lego
+│   ├── oras
+│   ├── sops
+│   └── yq
+├── helm-3.18
+│   └── bin
+│       └── helm
+├── helm-3.19
+│   └── bin
+│       └── helm
+├── kubectl-1.34
+│   └── bin
+│       └── kubectl
+├── kubectl-1.35
+│   └── bin
+│       └── kubectl
+└── kubectl-1.36
+    └── bin
+        └── kubectl
 ```
 
 ## Status
