@@ -34,7 +34,9 @@ permissions:
 jobs:
   build_and_push:
 
-    runs-on: ubuntu-latest
+    # Larger runner: the multi-arch build (native amd64 + QEMU-emulated arm64 in parallel,
+    # plus the test image loaded into the docker daemon) OOMs on the standard 2 vCPU / 8 GB runner
+    runs-on: ubuntu-24.04-4core
     steps:
       - name: Checkout
         uses: actions/checkout@v5
