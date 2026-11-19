@@ -85,15 +85,34 @@ Example runtime usage:
 ```
 docker run --rm -it --name rundeck -p 4440:4440 \
   -v $(pwd)/config.yaml:/config/config.yaml \
-  -v $(pwd)/test/lib:/var/lib/rundeck \
-  -v $(pwd)/test/var:/var/rundeck \
-  -v $(pwd)/test/log:/var/log/rundeck \
+  -v $(pwd)/tests/fixtures/lib:/var/lib/rundeck \
+  -v $(pwd)/tests/fixtures/var:/var/rundeck \
+  -v $(pwd)/tests/fixtures/log:/var/log/rundeck \
   quay.io/panubo/rundeck:latest
 ```
 
 The container bootstrap does not support SSL. It is intended that this image is run behind an SSL terminating proxy such as Nginx, HAProxy or a cloud load balancer service.
 
 For production use please use a release tag rather than the `latest` floating tag.
+
+## Testing
+
+The image includes a [Bats](https://github.com/bats-core/bats-core) test suite. Build the image, then run the tests against it:
+
+```
+make build
+make test
+```
+
+Alternatively, test an already built image (for example the `:test` tag used by CI):
+
+```
+make test TAG=test
+```
+
+The CI workflow runs `make _ci_test`, which writes a JUnit report to `tests/results/`.
+
+Test configuration and helper scripts are in `tests/fixtures/`.
 
 ## Plugins
 

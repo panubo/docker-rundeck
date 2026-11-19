@@ -2,4 +2,4 @@
 .dockerignore
 Makefile
 README.md
-test/
+tests/
