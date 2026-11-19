@@ -12,11 +12,15 @@ RUN set -x \
   ;
 
 # Install Java, AWS CLI, ansible and python3-pip
+# Rundeck builds and tests against Azul Zulu OpenJDK, which is the recommended distribution.
 RUN set -x \
   && export DEBIAN_FRONTEND=noninteractive \
   && mkdir /etc/ssl/certs/java/ \
+  && mkdir -p /etc/apt/keyrings \
+  && wget -qO- https://repos.azul.com/azul-repo.key | gpg --dearmor -o /etc/apt/keyrings/azul.gpg \
+  && echo "deb [signed-by=/etc/apt/keyrings/azul.gpg] https://repos.azul.com/zulu/deb stable main" > /etc/apt/sources.list.d/zulu.list \
   && apt-get update \
-  && apt-get -y install openjdk-17-jre-headless awscli ansible python3-pip pipx \
+  && apt-get -y install zulu17-jre-headless awscli ansible python3-pip pipx \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   ;
